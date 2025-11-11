@@ -1,0 +1,84 @@
+.carousel-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.carousel-title-bar {
+  margin-left: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 50%;
+}
+
+.carousel-title-bar::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 24px;
+  background-color: #000000;
+  align-self: center;
+}
+
+.carousel-title-bar::after {
+  content: "";
+  flex-grow: 1;
+  height: 2px;
+  background-color: black;
+  margin-top: 5px;
+  margin-left: 2px;
+  align-self: center;
+}
+
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.carousel-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+.carousel-btn:hover {
+  opacity: 1;
+  transform: scale(1.5);
+  transition: transform 0.4s ease;
+}
+.carousel-btn:not(:hover) {
+  transform: scale(1);
+  transition: transform 0.4s ease;
+}
+
+.carousel-row-wrapper {
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.carousel-row {
+  display: flex;
+  gap: 10px;
+  transition: transform 1s ease-out;
+}
+
+.carousel-slide {
+  width: calc((100% - 30px) / 4);
+  height: 200px;
+  background-color: #d4d4d4;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #000;
+  flex-shrink: 0;
+}

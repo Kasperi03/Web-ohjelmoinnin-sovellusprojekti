@@ -1,54 +1,32 @@
-import { useEffect, useState } from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
+
+import NavBar from "./components/navBar.jsx";
+import Home from "./pages/home.jsx";
+import Favorites from "./pages/favorites.jsx";
+import SignIn from "./pages/signIn.jsx";
+import Watchlist from "./pages/watchlist.jsx";
+import Group from "./pages/group.jsx";
+import GroupList from "./pages/groupList.jsx";
+import Profile from "./pages/profile.jsx";
+import CreateAccount from "./pages/createAccount.jsx";
+import Login from "./pages/login.jsx";
 
 function App() {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBooks() {
-      try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/book`);
-        if (!res.ok) throw new Error("Verkkovirhe");
-        const data = await res.json();
-        setBooks(data);
-      } catch (err) {
-        console.error("Virhe haettaessa kirjoja:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBooks();
-  }, []);
-
-  if (loading) return <p>Ladataan kirjoja...</p>;
-
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>Minun Kirjat tietokannassa</h1>
-      {books.length === 0 ? (
-        <p>Ei kirjoja löytynyt.</p>
-      ) : (
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Author</th>
-              <th>ISBN</th>
-            </tr>
-          </thead>
-          <tbody>
-            {books.map((book) => (
-              <tr key={book.id}>
-                <td>{book.name}</td>
-                <td>{book.author}</td>
-                <td>{book.isbn}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-      )}
-    </div>
+    <HashRouter>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/signIn" element={<SignIn />} />
+        <Route path="/watchlist" element={<Watchlist />} />
+        <Route path="/groupList" element={<GroupList />} />
+        <Route path="/group" element={<Group />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/createAccount" element={<CreateAccount />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </HashRouter>
   );
 }
 
