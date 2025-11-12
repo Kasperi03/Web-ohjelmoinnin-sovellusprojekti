@@ -1,0 +1,100 @@
+:root {
+  --background: #121314;        /* slightly darker for true contrast */
+  --text-color: #f5f4f1;        /* brighter, readable text */
+  --accent-color: #3391ff;
+  --border-color: #4f5458;
+  --placeholder-color: #a7a49c;
+  --card-bg: #1e1f21;           /* lighter than background for contrast */
+}
+
+html, body {
+  background-color: var(--background);
+  color: var(--text-color);
+  font-family: "Inter", system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input,
+textarea,
+select {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  outline: none;
+}
+
+input::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* 🎬 Movie cards */
+.movie-card {
+  background-color: var(--card-bg);
+  color: #ffffff; /* bright white for contrast */
+  border-radius: 10px;
+  padding: 0.8rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.movie-card h4 {
+  color: #ffffff;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* outline-like shadow */
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* 🎞 Movie grid layout */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+  align-items: start;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+/* ⏩ Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 2rem 0;
+  padding: 0;
+}
+
+.pagination li {
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination li:hover {
+  background-color: var(--accent-color);
+  color: #ffffff;
+}
