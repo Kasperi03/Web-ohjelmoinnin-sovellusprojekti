@@ -11,10 +11,13 @@ import Profile from "./pages/profile.jsx";
 import CreateAccount from "./pages/createAccount.jsx";
 import Login from "./pages/login.jsx";
 import SearchResults from "./pages/searchResults.jsx";
+import { GenreProvider } from "./context/genreContext.jsx";
+import "./pages/styles/darkTheme.css";
 
 function App() {
   return (
-    <HashRouter>
+    <GenreProvider>
+      <HashRouter>
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -29,6 +32,8 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
       </Routes>
     </HashRouter>
+    </GenreProvider>
+    
   );
 }
 

@@ -5,11 +5,13 @@ import { useState } from "react";
 export default function Navbar() {
   const [term, setTerm] = useState("")
   const navigate = useNavigate();
+  const [type, setType] = useState("movie");
+  
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent form reload
     if (term.trim()) {
-      navigate(`/search?q=${encodeURIComponent(term.trim())}`);
+      navigate(`/search?q=${encodeURIComponent(term.trim())}&type=${type}`);
       setTerm(""); // optional: clear input after navigating
     }
   };
@@ -21,13 +23,23 @@ export default function Navbar() {
         <Link to="/groupList">Groups</Link>
       </div>
 
-       <div className="navbar-center">
-        <form onSubmit={handleSubmit}>
+<div className="navbar-center">
+        <form onSubmit={handleSubmit} className="search-form">
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="search-type"
+          >
+            <option value="movie">Title</option>
+            <option value="person">Actor</option>
+            <option value="genre">Genre</option>
+          </select>
           <input
             type="text"
             placeholder="Search..."
             value={term}
             onChange={(e) => setTerm(e.target.value)}
+            className="search-input"
           />
         </form>
       </div>
