@@ -1,7 +1,19 @@
 import "./styles/navBar.css";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function Navbar() {
+  const [term, setTerm] = useState("")
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent form reload
+    if (term.trim()) {
+      navigate(`/search?q=${encodeURIComponent(term.trim())}`);
+      setTerm(""); // optional: clear input after navigating
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -9,8 +21,15 @@ export default function Navbar() {
         <Link to="/groupList">Groups</Link>
       </div>
 
-      <div className="navbar-center">
-        <input type="text" placeholder="Search..." className="search-input" />
+       <div className="navbar-center">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+          />
+        </form>
       </div>
 
       <div className="navbar-right">

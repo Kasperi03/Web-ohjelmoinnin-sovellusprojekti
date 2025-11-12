@@ -1,0 +1,9 @@
+.pagination {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;
+  margin-top: 40px;        /* push it down below content */
+  list-style: none;        /* remove bullet points */
+  padding: 0;
+}
+

@@ -10,6 +10,7 @@ import GroupList from "./pages/groupList.jsx";
 import Profile from "./pages/profile.jsx";
 import CreateAccount from "./pages/createAccount.jsx";
 import Login from "./pages/login.jsx";
+import SearchResults from "./pages/searchResults.jsx";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/createAccount" element={<CreateAccount />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/search" element={<SearchResults />} />
       </Routes>
     </HashRouter>
   );
