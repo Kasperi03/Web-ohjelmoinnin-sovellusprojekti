@@ -48,15 +48,14 @@
 /* Responsive grid layout */
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
   justify-items: center;
   align-items: start;
-  width: 100%;
-  max-width: 1300px;
-  margin: 40px auto; /* centers the grid on the page */
-  padding: 0 20px;
+  max-width: 1200px; /* keeps about 5 cards per row on large screens */
+  margin: 0 auto;
 }
+
 
 /* Each movie card */
 .movie-card {
