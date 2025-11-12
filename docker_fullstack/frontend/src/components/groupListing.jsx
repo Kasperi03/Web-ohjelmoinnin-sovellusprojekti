@@ -5,7 +5,7 @@ export default function GroupListing({ name, memberCount }) {
     <div className="group-block">
       <h2 className="group-name">{name}</h2>
       <span className="member-count">{memberCount}</span>
-      <button className="join-button">Join</button>
+      <button>Join</button>
     </div>
   );
 }
