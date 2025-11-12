@@ -1,0 +1,51 @@
+.group-block {
+  margin-top: 20px;
+  width: 500px;
+  height: 50px;
+  border: 1px solid black;
+  background-color: #a9a9a9;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.group-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.member-count {
+  font-size: 20px;
+  font-weight: bold;
+  flex-grow: 1;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.join-button {
+  width: 80px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #c9c9c9;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+    font-size: 16px;
+  font-weight: bold;
+}
+
+.join-button:hover {
+  background-color: darken (#c9c9c9, 30%);
+  transform: scale(1.15);
+  transition: transform 0.25s ease;
+}
+.join-button:not(:hover) {
+  transform: scale(1);
+  transition: transform 0.25s ease;
+}
