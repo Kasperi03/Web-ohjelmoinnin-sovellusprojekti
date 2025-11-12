@@ -1,0 +1,59 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.box {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  text-align: center;
+}
+.box h2 {
+  margin-bottom: 15px;
+}
+
+.input-field {
+  width: 80%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.create-button {
+  background-color: #c9c9c9;
+  color: black;
+  border: none;
+  padding: 6px 12px;
+  background-origin: padding-box;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 5px;
+}
+.create-button:hover {
+  background-color: darken(#c9c9c9, 30%);
+}
+.cancel-button {
+  background-color: #e0e0e0;
+  color: black;
+  border: none;
+  padding: 6px 12px;
+  background-origin: padding-box;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.cancel-button:hover {
+  background-color: darken(#e0e0e0, 30%);
+}
