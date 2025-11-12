@@ -1,0 +1,106 @@
+.pagination {
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: center;
+  list-style: none;
+  gap: 6px;                  /* space between buttons */
+  margin-top: 40px;
+  margin-bottom: 40px;
+  padding: 0;
+}
+
+.pagination li {
+  display: inline-block;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.pagination a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Active (selected) page */
+.pagination .selected a {
+  background-color: #333;
+  color: white;
+  border-color: #333;
+}
+
+/* Disabled previous/next */
+.pagination .disabled a {
+  color: #999;
+  border-color: #eee;
+  cursor: not-allowed;
+  background-color: #fafafa;
+}
+
+/* Responsive grid layout */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  max-width: 1300px;
+  margin: 40px auto; /* centers the grid on the page */
+  padding: 0 20px;
+}
+
+/* Each movie card */
+.movie-card {
+  width: 100%;
+  max-width: 200px;          /* sets a soft upper limit */
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Poster images */
+.movie-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #eee;
+}
+
+/* Placeholder if no poster */
+.no-poster {
+  width: 100%;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  color: #777;
+  font-size: 13px;
+}
+
+/* Title styling */
+.movie-card h4 {
+  margin: 10px;
+  font-size: 15px;
+  color: #222;
+  line-height: 1.3;
+}
+
