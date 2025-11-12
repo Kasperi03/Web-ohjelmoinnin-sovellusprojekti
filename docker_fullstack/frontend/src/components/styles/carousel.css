@@ -17,7 +17,7 @@
   display: inline-block;
   width: 3px;
   height: 24px;
-  background-color: #000000;
+  background-color: white;
   align-self: center;
 }
 
@@ -25,7 +25,7 @@
   content: "";
   flex-grow: 1;
   height: 2px;
-  background-color: black;
+  background-color: white;
   margin-top: 5px;
   margin-left: 2px;
   align-self: center;
@@ -46,6 +46,7 @@
   opacity: 0.6;
   transition: opacity 0.2s;
   user-select: none;
+  color: white;
 }
 
 .carousel-btn:hover {
@@ -60,25 +61,80 @@
 
 .carousel-row-wrapper {
   overflow: hidden;
-  flex-grow: 1;
+  width: 100%;
 }
 
 .carousel-row {
   display: flex;
   gap: 10px;
-  transition: transform 1s ease-out;
+  transition: transform 0.5s ease;
 }
 
 .carousel-slide {
-  width: calc((100% - 30px) / 4);
-  height: 200px;
-  background-color: #d4d4d4;
+  min-width: calc(25% - 10px);
+  height: 400px;
+  flex-shrink: 0;
   border-radius: 10px;
+  overflow: hidden;
+  background-color: #ddd;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30px;
+  box-shadow: none;
+
+  transform: translateY(0);
+  transition: transform 0.4s ease;
+}
+
+.slide-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  color: white;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.carousel-slide:hover {
+  box-shadow: 0 -20px 30px -10px rgba(0, 0, 0, 0.25); /* top-only shadow */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 10px;
+}
+
+.carousel-slide:hover .slide-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Optional hover lift + shadow */
+.carousel-slide:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 -20px 30px -10px rgba(0, 0, 0, 0.25);
+}
+
+.rating {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 4px 6px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: bold;
-  color: #000;
-  flex-shrink: 0;
+  align-self: flex-start;
+  transform: translateX(8px);
+}
+.title-overlay {
+  font-size: 18px;
+  font-weight: 700;
+  transform: translateX(8px);
 }
