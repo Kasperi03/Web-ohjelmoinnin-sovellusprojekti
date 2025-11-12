@@ -1,9 +1,9 @@
 import "./styles/navBar.css";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Navbar() {
-  const [term, setTerm] = useState("")
+  const [term, setTerm] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -21,9 +21,10 @@ export default function Navbar() {
         <Link to="/groupList">Groups</Link>
       </div>
 
-       <div className="navbar-center">
+      <div className="navbar-center">
         <form onSubmit={handleSubmit}>
           <input
+            className="search-input"
             type="text"
             placeholder="Search..."
             value={term}
