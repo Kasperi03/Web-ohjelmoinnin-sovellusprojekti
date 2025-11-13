@@ -13,6 +13,8 @@ import Login from "./pages/login.jsx";
 import SearchResults from "./pages/searchResults.jsx";
 import { GenreProvider } from "./context/genreContext.jsx";
 import "./pages/styles/darkTheme.css";
+import MovieDetails from "./pages/movieDetails.jsx";
+
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/createAccount" element={<CreateAccount />} />
         <Route path="/login" element={<Login />} />
         <Route path="/search" element={<SearchResults />} />
+        <Route path="/movie/:id" element={<MovieDetails />} />
+
       </Routes>
     </HashRouter>
     </GenreProvider>

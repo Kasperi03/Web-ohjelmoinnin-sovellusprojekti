@@ -24,14 +24,22 @@ export default function Navbar() {
 
       <div className="navbar-center">
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={term}
-            onChange={(e) => setTerm(e.target.value)}
-            className="search-input"
-          />
-        </form>
+    <select
+      value={type}
+      onChange={(e) => setType(e.target.value)}
+    >
+      <option value="movie">Title</option>
+      <option value="person">Actor</option>
+      <option value="genre">Genre</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder={`Search by ${type}...`}
+      value={term}
+      onChange={(e) => setTerm(e.target.value)}
+    />
+  </form>
       </div>
 
       <div className="navbar-right">
