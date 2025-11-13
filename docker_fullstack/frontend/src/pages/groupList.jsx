@@ -1,22 +1,41 @@
 import "./styles/groupList.css";
 import GroupListing from "../components/groupListing.jsx";
 import CreateGroup from "../components/createGroup.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function GroupList() {
-  const [groups, setGroups] = useState([
-    {
-      name: "Test Group",
-      memberCount: 5,
-    },
-  ]);
-
+  const [groups, setGroups] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
 
-  const handleCreateGroup = (groupName) => {
-    const newGroup = { name: groupName, memberCount: 1 };
-    setGroups([...groups, newGroup]);
-    setIsCreating(false);
+  // Load groups from backend
+  useEffect(() => {
+    async function fetchGroups() {
+      try {
+        const res = await fetch("http://localhost:3001/groups");
+        const data = await res.json();
+        setGroups(data);
+      } catch (err) {
+        console.error("Failed to load groups:", err);
+      }
+    }
+    fetchGroups();
+  }, []);
+
+  const handleCreateGroup = async (groupName) => {
+    try {
+      const res = await fetch("http://localhost:3001/groups", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: groupName }),
+      });
+
+      const newGroup = await res.json();
+      setGroups((prev) => [...prev, newGroup]);
+      setIsCreating(false);
+
+    } catch (err) {
+      console.error("Failed to create group:", err);
+    }
   };
 
   return (
@@ -28,11 +47,19 @@ export default function GroupList() {
         Create New Group
       </button>
 
-      {groups.map((group, index) => (
-        <GroupListing key={index} name={group.name} memberCount={group.memberCount} /> //Asettaa tiedot ryhmään
+      {groups.map((group) => (
+        <GroupListing
+          key={group.group_id}
+          name={group.name}
+          memberCount={0} // You will update this later
+        />
       ))}
+
       {isCreating && (
-        <CreateGroup onCreate={handleCreateGroup} onClose={() => setIsCreating(false)} /> // tekee ryhmän ja postaa sen
+        <CreateGroup 
+          onCreate={handleCreateGroup} 
+          onClose={() => setIsCreating(false)} 
+        />
       )}
     </div>
   );
