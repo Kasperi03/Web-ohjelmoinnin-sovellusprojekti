@@ -6,7 +6,10 @@ export default function Favorites() {
     <div className="favorites-container">
       <h1>Favorites Page</h1>
       <p>This is where your favorite items will be displayed.</p>
-      <Carousel title="Your favorite movies" />
+
+      <div className="carousel-container">
+        <Carousel title="Your Favorites" />
+      </div>
     </div>
   );
 }
