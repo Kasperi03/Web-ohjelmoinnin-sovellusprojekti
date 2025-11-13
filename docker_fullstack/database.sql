@@ -1,7 +1,3 @@
--- ==========================================
--- PostgreSQL Database Schema (Final)
--- ==========================================
-
 -- Drop existing tables (in correct order to avoid FK conflicts)
 DROP TABLE IF EXISTS group_movies CASCADE;
 DROP TABLE IF EXISTS favorites CASCADE;
