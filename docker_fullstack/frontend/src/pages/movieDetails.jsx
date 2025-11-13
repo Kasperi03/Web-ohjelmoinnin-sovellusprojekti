@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "../api/movieDetailHandler.js";
+import "./styles/movieDetails.css";
 
 export default function MovieDetails() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-   const [userRating, setUserRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
   useEffect(() => {
@@ -15,9 +16,7 @@ export default function MovieDetails() {
   if (!movie) return <p>Loading...</p>;
 
   // Find official YouTube trailer
-const trailer = movie.videos?.results?.find(
-    (v) => v.type === "Trailer" && v.site === "YouTube"
-  );
+  const trailer = movie.videos?.results?.find((v) => v.type === "Trailer" && v.site === "YouTube");
 
   const handleFavorite = () => {
     alert("Added to favorites (hook this to backend later)");
@@ -33,31 +32,28 @@ const trailer = movie.videos?.results?.find(
     setReviewText("");
   };
 
-return (
+  return (
     <div className="movie-details">
-
       <div className="movie-top-row">
+        {/* POSTER */}
+        <img
+          className="details-poster"
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+        />
 
-  {/* POSTER */}
-  <img
-    className="details-poster"
-    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-    alt={movie.title}
-  />
-
-  {/* TRAILER */}
-  {trailer && (
-    <div className="details-trailer-box">
-      <h2>Trailer</h2>
-      <iframe
-        src={`https://www.youtube.com/embed/${trailer.key}`}
-        title="Trailer"
-        allowFullScreen
-      ></iframe>
-    </div>
-  )}
-
-</div>
+        {/* TRAILER */}
+        {trailer && (
+          <div className="details-trailer-box">
+            <h2>Trailer</h2>
+            <iframe
+              src={`https://www.youtube.com/embed/${trailer.key}`}
+              title="Trailer"
+              allowFullScreen
+            ></iframe>
+          </div>
+        )}
+      </div>
 
       {/* DESCRIPTION + ACTIONS BELOW */}
       <div className="details-bottom">
@@ -66,8 +62,12 @@ return (
 
         {/* Buttons */}
         <div className="movie-actions">
-          <button className="fav-btn" onClick={handleFavorite}>❤️ Favorite</button>
-          <button className="group-btn" onClick={handleAddToGroup}>➕ Add to Group</button>
+          <button className="fav-btn" onClick={handleFavorite}>
+            ❤️ Favorite
+          </button>
+          <button className="group-btn" onClick={handleAddToGroup}>
+            ➕ Add to Group
+          </button>
         </div>
 
         {/* Rating */}
@@ -99,7 +99,6 @@ return (
           </button>
         </div>
       </div>
-
     </div>
   );
 }

@@ -2,6 +2,7 @@ import "./styles/home.css";
 import Carousel from "../components/carousel.jsx";
 import { getNowInTheaters, getTrending } from "../api/tmbs.js";
 import { useEffect, useState } from "react";
+import logo from "../img/logo.png";
 
 export default function Home() {
   const [NowInTheaters, setNowInTheaters] = useState([]); // update state variable name to NowInTheaters when getting value from API
@@ -19,10 +20,13 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <h1>Welcome to the Fullstack Docker App</h1>
-      <p>This is the home page of the application.</p>
-      <Carousel title="Trending" movies={trending} visibleSlides={4} />
-      <Carousel title="Now in theaters" movies={NowInTheaters} visibleSlides={4} />
+      <h1>Welcome to the Rotten Tiger</h1>
+      <img src={logo} alt="Rotten Tiger logo" className="home-logo" />
+
+      <div className="carousel-container">
+        <Carousel title="Trending" movies={trending} visibleSlides={4} />
+        <Carousel title="Now in theaters" movies={NowInTheaters} visibleSlides={4} />
+      </div>
     </div>
   );
 }
