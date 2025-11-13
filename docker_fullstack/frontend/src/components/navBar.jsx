@@ -24,7 +24,7 @@ export default function Navbar() {
 
       <div className="navbar-center">
         <form onSubmit={handleSubmit} className="form">
-          <select value={type} onChange={(e) => setType(e.target.value)}>
+          <select value={type} onChange={(e) => setType(e.target.value)} className="select">
             <option value="movie">Title</option>
             <option value="person">Actor</option>
             <option value="genre">Genre</option>

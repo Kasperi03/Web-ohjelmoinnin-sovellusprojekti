@@ -21,6 +21,7 @@ export default function Home() {
   return (
     <div className="home-container">
       <h1>Welcome to the Rotten Tiger</h1>
+      <img src={logo} alt="Tiger logo" className="tiger-logo" />
       <div className="carousel-container">
         <Carousel title="Trending" movies={trending} visibleSlides={4} />
         <Carousel title="Now in theaters" movies={NowInTheaters} visibleSlides={4} />
