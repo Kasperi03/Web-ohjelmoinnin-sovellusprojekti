@@ -1,10 +1,12 @@
 import { useState } from "react";
 import "./styles/carousel.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Carousel({ title = "", movies = [], visibleSlides = 4 }) {
+  const navigate = useNavigate();
   const totalSlides = movies.length;
-  const [currentIndex, setCurrentIndex] = useState(0); // Track the current index and updates it with useState
-  const imgUrl = "https://image.tmdb.org/t/p/w500"; // Base url for TMDB posters
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const imgUrl = "https://image.tmdb.org/t/p/w500";
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + visibleSlides >= totalSlides ? 0 : prev + visibleSlides));
@@ -16,12 +18,17 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
     );
   };
 
+  const goToDetails = (id) => {
+    navigate(`/groupList`); // <- replace with movie details route
+    navigate(`/groupList`);
+  };
+
   return (
     <div className="carousel-container">
       {title && (
         <h2 className="carousel-title">
           <span className="carousel-title-bar">{title}</span>
-        </h2> // title for the carousel + the lines for visual effect
+        </h2>
       )}
 
       <div className="carousel">
@@ -35,19 +42,20 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
             style={{
               transform: `translateX(-${(currentIndex * 100) / visibleSlides}%)`,
               transition: "transform 0.5s ease",
-            }} // slide animation for carousel for smoothness
+            }}
           >
             {movies.map((movie) => (
-              <div key={movie.id} className="carousel-slide">
+              <div
+                key={movie.id}
+                className="carousel-slide"
+                onClick={() => navigate(`/movie/${movie.id}`)} // <-- clickable
+                style={{ cursor: "pointer" }}
+              >
                 {movie.poster_path ? (
-                  <img src={`${imgUrl}${movie.poster_path}`} alt={movie.title} /> //gets the poster image from tmdb
+                  <img src={`${imgUrl}${movie.poster_path}`} alt={movie.title} />
                 ) : (
                   <div className="no-poster">No Image</div>
                 )}
-                <div className="slide-overlay">
-                  <div className="title-overlay"> {movie.title} </div>
-                  <div className="rating"> rating: {movie.vote_average?.toFixed(1)}/10</div>
-                </div> {/* Overlay that shows movie title and rating on hover */}
               </div>
             ))}
           </div>

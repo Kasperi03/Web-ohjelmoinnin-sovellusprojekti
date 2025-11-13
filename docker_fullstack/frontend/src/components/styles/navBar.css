@@ -63,3 +63,8 @@
   border: none;
   outline: none;
 }
+.navbar-center .form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
