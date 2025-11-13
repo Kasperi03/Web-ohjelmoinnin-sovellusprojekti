@@ -1,12 +1,11 @@
 import "./styles/navBar.css";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Navbar() {
-  const [term, setTerm] = useState("")
+  const [term, setTerm] = useState("");
   const navigate = useNavigate();
   const [type, setType] = useState("movie");
-  
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent form reload
@@ -23,17 +22,8 @@ export default function Navbar() {
         <Link to="/groupList">Groups</Link>
       </div>
 
-<div className="navbar-center">
-        <form onSubmit={handleSubmit} className="search-form">
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="search-type"
-          >
-            <option value="movie">Title</option>
-            <option value="person">Actor</option>
-            <option value="genre">Genre</option>
-          </select>
+      <div className="navbar-center">
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Search..."
