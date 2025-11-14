@@ -15,29 +15,26 @@ import { GenreProvider } from "./context/genreContext.jsx";
 import "./pages/styles/darkTheme.css";
 import MovieDetails from "./pages/movieDetails.jsx";
 
-
 function App() {
   return (
     <GenreProvider>
       <HashRouter>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favorites />} />
-        <Route path="/signIn" element={<SignIn />} />
-        <Route path="/watchlist" element={<Watchlist />} />
-        <Route path="/groupList" element={<GroupList />} />
-        <Route path="/group" element={<Group />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/createAccount" element={<CreateAccount />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/movie/:id" element={<MovieDetails />} />
-
-      </Routes>
-    </HashRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/signIn" element={<SignIn />} />
+          <Route path="/watchlist" element={<Watchlist />} />
+          <Route path="/groupList" element={<GroupList />} />
+          <Route path="/group" element={<Group />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/createAccount" element={<CreateAccount />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/movie/:id" element={<MovieDetails />} />
+        </Routes>
+      </HashRouter>
     </GenreProvider>
-    
   );
 }
 

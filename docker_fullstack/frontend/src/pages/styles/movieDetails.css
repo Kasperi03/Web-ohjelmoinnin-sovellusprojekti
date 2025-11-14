@@ -1,198 +1,156 @@
-/* MAIN WRAPPER */
+/* Main container */
 .movie-details {
-  padding: 40px 60px;
-  max-width: 1400px;
-  margin: auto;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1c1c1c;
+  color: white;
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
 }
 
-/* 
-  ============================
-    TOP SECTION (POSTER + TRAILER)
-  ============================
-*/
-.details-top-row {
-    display: grid;
-  grid-template-columns: 350px 1fr 420px; 
-  gap: 40px;
-  align-items: start;
-  padding-top: 40px;
+/* Top row: Poster + Trailer */
+.movie-top-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap; /* allows responsiveness */
+  margin-bottom: 20px;
 }
 
-/* POSTER */
 .details-poster {
-  width: 100%;
-  max-width: 350px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transform: translateY(55px);
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 
-/* TRAILER BOX CONTAINER */
+/* Trailer box */
 .details-trailer-box {
-  width: 100%;
-  max-width: 480px;          /* default size on large screens */
-  min-width: 280px;          /* stays usable on mobile */
+  flex: 1;
+  min-width: 250px;
 }
 
-/* Trailer Title */
 .details-trailer-box h2 {
-  margin-bottom: 10px;
-  color: var(--text-color, #fff);
-  text-align: center;
+  margin-bottom: 8px;
 }
 
-/* RESPONSIVE 4:3 IFRAME */
 .details-trailer-box iframe {
   width: 100%;
-  aspect-ratio: 4 / 3;       /* fixed ratio */
-  border-radius: 12px;
-  border: none;
-  display: block;
-  background: #000;
-}
-
-
-
-/*
-  ============================
-    DESCRIPTION SECTION (Under poster/trailer)
-  ============================
-*/
-
-.movie-info {
-  margin-top: 40px;
-}
-
-.movie-info h1 {
-  margin-bottom: 10px;
-  font-size: 32px;
-  color: var(--text-color, #fff);
-}
-
-.movie-info p {
-  line-height: 1.6;
-  color: var(--text-color, #e2e2e2);
-  max-width: 900px;
-}
-
-
-
-/*
-  ============================
-      ACTION BUTTONS
-  ============================
-*/
-
-.movie-actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-}
-
-.movie-actions button {
-  background-color: #333;
-  color: white;
-  padding: 10px 16px;
-  border: none;
+  height: 300px;
   border-radius: 8px;
+  border: none;
+}
+
+/* Bottom section */
+.details-bottom h1 {
+  margin-bottom: 12px;
+}
+
+.details-overview {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Action buttons */
+.movie-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fav-btn,
+.group-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease;
+  background-color: #cb0000;
+  color: white;
+  font-weight: bold;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.movie-actions button:hover {
-  background-color: #555;
+.fav-btn:hover,
+.group-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
-
-
-/*
-  ============================
-         RATING SECTION
-  ============================
-*/
-
-.rating-section {
-  margin-top: 25px;
-}
-
+/* Rating section */
 .rating-section h3 {
-  color: var(--text-color);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .stars {
-  font-size: 28px;
-  cursor: pointer;
+  display: flex;
+  gap: 4px;
+  font-size: 22px;
 }
 
 .star {
-  color: #666;
-  margin-right: 6px;
+  cursor: pointer;
+  color: #777;
   transition: color 0.2s ease;
 }
 
 .star.filled {
-  color: gold;
+  color: #ffd700;
 }
 
-
-
-/*
-  ============================
-         REVIEW SECTION
-  ============================
-*/
-
+/* Review section */
 .review-section {
-  margin-top: 30px;
-  max-width: 600px;
+  margin-top: 16px;
+}
+
+.review-section h3 {
+  margin-bottom: 8px;
 }
 
 .review-section textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #555;
-  background-color: #1f1f1f;
-  color: #fff;
+  min-height: 80px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: white;
   resize: vertical;
+  margin-bottom: 8px;
 }
 
 .submit-review {
-  margin-top: 10px;
-  background-color: #0066ff;
-  color: white;
-  padding: 10px 16px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
+  background-color: #e50914;
+  color: white;
+  font-weight: bold;
   cursor: pointer;
-  font-weight: 600;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .submit-review:hover {
-  background-color: #1a7fff;
+  transform: scale(1.05);
+  opacity: 0.9;
 }
 
-
-
-/*
-  ============================
-        MOBILE RESPONSIVE
-  ============================
-*/
-
-@media (max-width: 900px) {
-  .details-top-row {
-    grid-template-columns: 1fr;
-  }
-
-  .details-poster {
-    max-width: 250px;
-    margin: 0 auto;
+/* Responsive adjustments */
+@media (max-width: 650px) {
+  .movie-top-row {
+    flex-direction: column;
+    align-items: center;
   }
 
   .details-trailer-box iframe {
-    height: 260px;
+    height: 200px;
+  }
+
+  .details-poster {
+    width: 150px;
+    height: 225px;
   }
 }
