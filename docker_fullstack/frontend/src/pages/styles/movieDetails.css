@@ -1,0 +1,156 @@
+/* Main container */
+.movie-details {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #1c1c1c;
+  color: white;
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+}
+
+/* Top row: Poster + Trailer */
+.movie-top-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap; /* allows responsiveness */
+  margin-bottom: 20px;
+}
+
+.details-poster {
+  transform: translateY(55px);
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+/* Trailer box */
+.details-trailer-box {
+  flex: 1;
+  min-width: 250px;
+}
+
+.details-trailer-box h2 {
+  margin-bottom: 8px;
+}
+
+.details-trailer-box iframe {
+  width: 100%;
+  height: 300px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* Bottom section */
+.details-bottom h1 {
+  margin-bottom: 12px;
+}
+
+.details-overview {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Action buttons */
+.movie-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.fav-btn,
+.group-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #cb0000;
+  color: white;
+  font-weight: bold;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.fav-btn:hover,
+.group-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Rating section */
+.rating-section h3 {
+  margin-bottom: 8px;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  font-size: 22px;
+}
+
+.star {
+  cursor: pointer;
+  color: #777;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+/* Review section */
+.review-section {
+  margin-top: 16px;
+}
+
+.review-section h3 {
+  margin-bottom: 8px;
+}
+
+.review-section textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: white;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.submit-review {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e50914;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.submit-review:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 650px) {
+  .movie-top-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .details-trailer-box iframe {
+    height: 200px;
+  }
+
+  .details-poster {
+    width: 150px;
+    height: 225px;
+  }
+}
