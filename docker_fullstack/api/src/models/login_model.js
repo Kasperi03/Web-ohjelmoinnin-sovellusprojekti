@@ -1,8 +1,8 @@
 import pool from "../database.js";
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-const { sign } = jwt
+const { sign } = jwt;
 
 export async function createAccount(username, email, password) {
   const password_hash = await bcrypt.hash(password, 10);
@@ -14,7 +14,6 @@ export async function createAccount(username, email, password) {
 
   return result.rows[0];
 }
-
 
 export async function findUserByEmail(email) {
   const result = await pool.query(
@@ -30,7 +29,7 @@ export async function checkPassword(email, plainPassword) {
   if (!user) {
     return null;
   }
-  if (await bcrypt.compare(plainPassword, user.password_hash)){
+  if (await bcrypt.compare(plainPassword, user.password_hash)) {
     return user;
   }
   return null;
@@ -51,4 +50,48 @@ export async function deleteAccount(accountId) {
   );
 
   return result.rowCount > 0;
+}
+
+export async function getUserById(id) {
+  const result = await pool.query(
+    "SELECT account_id, username, email FROM account WHERE account_id = $1",
+    [id]
+  );
+  return result.rows[0] || null;
+}
+
+export async function updateUsername(accountId, newUsername) {
+  const result = await pool.query(
+    "UPDATE account SET username = $1 WHERE account_id = $2 RETURNING account_id, username, email",
+    [newUsername, accountId]
+  );
+  return result.rows[0] || null;
+}
+
+export async function updateEmail(accountId, newEmail) {
+  const result = await pool.query(
+    "UPDATE account SET email = $1 WHERE account_id = $2 RETURNING account_id, username, email",
+    [newEmail, accountId]
+  );
+  return result.rows[0] || null;
+}
+
+export async function changePassword(accountId, currentPassword, newPassword) {
+
+  const result = await pool.query(
+    "SELECT password_hash FROM account WHERE account_id = $1",
+    [accountId]
+  );
+  const user = result.rows[0];
+  if (!user) return null;
+
+  const ok = await bcrypt.compare(currentPassword, user.password_hash);
+  if (!ok) return false;
+
+  const newHash = await bcrypt.hash(newPassword, 10);
+  await pool.query(
+    "UPDATE account SET password_hash = $1 WHERE account_id = $2",
+    [newHash, accountId]
+  );
+  return true;
 }

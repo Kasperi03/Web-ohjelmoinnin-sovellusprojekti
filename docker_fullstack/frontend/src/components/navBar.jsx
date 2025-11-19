@@ -5,15 +5,29 @@ import logo from "../img/logo.png";
 
 export default function Navbar() {
   const [term, setTerm] = useState("");
-  const navigate = useNavigate();
   const [type, setType] = useState("movie");
+  const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
+
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent form reload
+    e.preventDefault();
     if (term.trim()) {
       navigate(`/search?q=${encodeURIComponent(term.trim())}&type=${type}`);
-      setTerm(""); // optional: clear input after navigating
+      setTerm("");
     }
+  };
+
+  const handleProfileClick = () => {
+    setShowMenu(false);
+    navigate("/profile");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setShowMenu(false);
+    navigate("/");
   };
 
   return (
@@ -26,7 +40,11 @@ export default function Navbar() {
 
       <div className="navbar-center">
         <form onSubmit={handleSubmit} className="form">
-          <select value={type} onChange={(e) => setType(e.target.value)} className="select">
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="select"
+          >
             <option value="movie">Title</option>
             <option value="person">Actor</option>
             <option value="genre">Genre</option>
@@ -44,7 +62,31 @@ export default function Navbar() {
 
       <div className="navbar-right">
         <Link to="/favorites">Favorites</Link>
-        <Link to="/signIn">Sign In</Link>
+
+        {isLoggedIn ? (
+          <div className="navbar-profile">
+            <button
+              type="button"
+              className="profile-button"
+              onClick={() => setShowMenu((prev) => !prev)}
+            >
+              Profile ▾
+            </button>
+
+            {showMenu && (
+              <div className="profile-menu">
+                <button type="button" onClick={handleProfileClick}>
+                  Profile
+                </button>
+                <button type="button" onClick={handleLogout}>
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link to="/signIn">Sign In</Link>
+        )}
       </div>
     </nav>
   );

@@ -6,6 +6,7 @@ import "dotenv/config";
 import GroupRouter from "./routers/group_router.js";
 import GroupMemberRouter from "./routers/group_member_router.js";
 import loginRouter from "./routers/login_router.js";
+import ProfileRouter from "./routers/profile_router.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -27,6 +28,8 @@ app.use("/group-members", GroupMemberRouter);
 
 // Login routes
 app.use("/login", loginRouter);
+
+app.use("/profile", ProfileRouter);
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);

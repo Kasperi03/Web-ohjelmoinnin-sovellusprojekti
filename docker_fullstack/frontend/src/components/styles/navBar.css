@@ -85,3 +85,51 @@
   width: 50px;
   height: auto;
 }
+
+.navbar-profile {
+  position: relative;
+}
+
+.profile-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "roboto", sans-serif;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.profile-button:hover {
+  opacity: 0.7;
+  transform: scale(1.05);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.profile-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background-color: #1e1f21;
+  border-radius: 8px;
+  min-width: 140px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  padding: 4px 0;
+  z-index: 200;
+}
+
+.profile-menu button {
+  width: 100%;
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.profile-menu button:hover {
+  background-color: #2a2a2c;
+}
