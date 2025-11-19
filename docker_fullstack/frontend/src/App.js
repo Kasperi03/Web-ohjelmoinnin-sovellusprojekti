@@ -26,7 +26,7 @@ function App() {
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/groupList" element={<GroupList />} />
-          <Route path="/group" element={<GroupPage />} />
+          <Route path="group/:groupId" element={<GroupPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/createAccount" element={<CreateAccount />} />
           <Route path="/login" element={<Login />} />

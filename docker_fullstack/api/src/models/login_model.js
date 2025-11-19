@@ -38,7 +38,7 @@ export async function checkPassword(email, plainPassword) {
 
 export function createToken(user) {
   return sign(
-    { id: user.account_id, email: user.email },
+    { account_id: user.account_id, email: user.email },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
