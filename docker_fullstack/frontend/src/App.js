@@ -5,7 +5,7 @@ import Home from "./pages/home.jsx";
 import Favorites from "./pages/favorites.jsx";
 import SignIn from "./pages/signIn.jsx";
 import Watchlist from "./pages/watchlist.jsx";
-import Group from "./pages/group.jsx";
+import GroupPage from "./pages/group.jsx";
 import GroupList from "./pages/groupList.jsx";
 import Profile from "./pages/profile.jsx";
 import CreateAccount from "./pages/createAccount.jsx";
@@ -26,7 +26,7 @@ function App() {
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/groupList" element={<GroupList />} />
-          <Route path="/group" element={<Group />} />
+          <Route path="/group" element={<GroupPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/createAccount" element={<CreateAccount />} />
           <Route path="/login" element={<Login />} />

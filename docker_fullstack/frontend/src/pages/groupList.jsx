@@ -2,6 +2,7 @@ import "./styles/groupList.css";
 import GroupListing from "../components/groupListing.jsx";
 import CreateGroup from "../components/createGroup.jsx";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function GroupList() {
   const [groups, setGroups] = useState([]);
@@ -32,7 +33,6 @@ export default function GroupList() {
       const newGroup = await res.json();
       setGroups((prev) => [...prev, newGroup]);
       setIsCreating(false);
-
     } catch (err) {
       console.error("Failed to create group:", err);
     }
@@ -43,6 +43,9 @@ export default function GroupList() {
       <h1>Groups Page</h1>
       <p>This is where you can view groups.</p>
 
+      <button>
+        <Link to="/group">Group</Link>
+      </button>
       <button className="create-btn" onClick={() => setIsCreating(true)}>
         Create New Group
       </button>
@@ -56,10 +59,7 @@ export default function GroupList() {
       ))}
 
       {isCreating && (
-        <CreateGroup 
-          onCreate={handleCreateGroup} 
-          onClose={() => setIsCreating(false)} 
-        />
+        <CreateGroup onCreate={handleCreateGroup} onClose={() => setIsCreating(false)} />
       )}
     </div>
   );

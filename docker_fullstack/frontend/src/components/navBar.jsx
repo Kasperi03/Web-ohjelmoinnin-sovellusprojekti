@@ -1,6 +1,7 @@
 import "./styles/navBar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import logo from "../img/logo.png";
 
 export default function Navbar() {
   const [term, setTerm] = useState("");
@@ -18,6 +19,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-left">
+        <img src={logo} alt="Tiger logo" className="tiger-logo" />
         <Link to="/">Home</Link>
         <Link to="/groupList">Groups</Link>
       </div>
