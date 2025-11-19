@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { createAccount } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 import "./styles/createAccount.css";
 
 export default function CreateAccount() {
@@ -7,8 +8,18 @@ export default function CreateAccount() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e) {
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    try {
+      await createAccount({ username, email, password });
+      alert("Account created!");
+      navigate("/signIn");
+    } catch (err) {
+      alert("Error creating account: " + err.message);
+    }
   }
 
   return (
@@ -54,13 +65,6 @@ export default function CreateAccount() {
             Create account
           </button>
         </form>
-
-        <div className="createAccount-footer">
-          <span>Already have an account?</span>
-          <Link to="/signIn" className="createAccount-link">
-            Back to login
-          </Link>
-        </div>
       </div>
     </div>
   );
