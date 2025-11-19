@@ -1,6 +1,6 @@
 .navbar {
   width: 100%;
-  background-color: rgb(39, 39, 39);
+  background-color: #1a1a1a; /* deeper, more cinematic */
   padding: 14px 40px;
   position: fixed;
   top: 0;
@@ -11,13 +11,19 @@
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   gap: 20px;
+
+  border-bottom: 1px solid #2a2a2c; /* subtle IMDB-like border */
+  backdrop-filter: blur(6px); /* soft premium blur */
 }
 
 .navbar-left {
   display: flex;
   justify-content: flex-start;
-  gap: 180px;
+  gap: 80px;
   align-items: center;
+}
+.navbar-left .home {
+  transform: translateX(-20px);
 }
 .navbar-right {
   display: flex;
@@ -72,4 +78,10 @@
   font-weight: bold;
   font-size: 15px;
   font-family: "roboto", sans-serif;
+}
+
+.tiger-logo {
+  transform: translateX(-30px);
+  width: 50px;
+  height: auto;
 }
