@@ -1,8 +1,23 @@
 .favorites-container {
   text-align: center;
-  padding-top: 50px;
+  padding-top: 100px;
+  min-height: 80vh;
+  color: white; /* Keep text white for visibility */
+  background-color: #1a1a1a; /* Dark background */
 }
 
-.carousel-container {
-  margin-top: 300px;
+.favorites-container h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  display: inline-block;
+}
+
+.favorites-container .carousel-container {
+  transform: translateY(-350px); /* Pushes carousel down as requested */
+}
+
+.no-favorites {
+  margin-top: 4rem;
+  font-size: 1.5rem;
+  opacity: 0.6;
 }

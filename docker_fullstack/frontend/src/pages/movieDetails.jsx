@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "../api/movieDetailHandler.js";
 import "./styles/movieDetails.css";
+import { addFavorite } from "../api/favorites.js";
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -18,10 +19,19 @@ export default function MovieDetails() {
   // Find official YouTube trailer
   const trailer = movie.videos?.results?.find((v) => v.type === "Trailer" && v.site === "YouTube");
 
-  const handleFavorite = () => {
-    alert("Added to favorites (hook this to backend later)");
+  const handleFavorite = async () => {
+    try {
+      await addFavorite(id);
+      alert("Added to favorites!");
+    } catch (error) {
+      if (error.message === "User not logged in") {
+        alert("Please login first.");
+      } else {
+        console.error(error);
+        alert(error.message);
+      }
+    }
   };
-
   const handleAddToGroup = () => {
     alert("Add to group clicked");
   };
