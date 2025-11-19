@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createAccount } from "../api/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./styles/createAccount.css";
 
 export default function CreateAccount() {
