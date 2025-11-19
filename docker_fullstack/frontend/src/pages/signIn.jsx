@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { signIn } from "../api/auth";
 import { Link } from "react-router-dom";
 import "./styles/signIn.css";
 
@@ -6,8 +7,18 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+
+try {
+      const result = await signIn({ email, password });
+
+      localStorage.setItem("token", result.token);
+      alert("Logged in!");
+      navigate("/profile");
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
   }
 
   return (
