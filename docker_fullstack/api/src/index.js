@@ -21,11 +21,12 @@ app.get("/", (req, res) => {
   res.send("Postgres API");
 });
 
+// Group member routes
+app.use("/groups", GroupMemberRouter);
 // Group routes
 app.use("/groups", GroupRouter);
 
-// Group member routes
-app.use("/group-members", GroupMemberRouter);
+
 
 // Login routes
 app.use("/login", loginRouter);

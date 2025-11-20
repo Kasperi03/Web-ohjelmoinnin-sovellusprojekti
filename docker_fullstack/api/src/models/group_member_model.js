@@ -52,14 +52,24 @@ export async function removeMember(id) {
 // List accepted members
 export async function getAcceptedMembers(groupId) {
   const result = await pool.query(
-    `SELECT gm.*, a.username
+    `SELECT 
+        gm.id,
+        gm.group_id,
+        gm.account_id,
+        gm.status,
+        a.username,
+        (g.owner_id = gm.account_id) AS is_owner
      FROM group_members gm
      JOIN account a ON a.account_id = gm.account_id
-     WHERE gm.group_id = $1 AND gm.status = 'accepted'`,
+     JOIN groups g ON g.group_id = gm.group_id
+     WHERE gm.group_id = $1
+       AND gm.status = 'accepted'
+     ORDER BY is_owner DESC, a.username ASC`,
     [groupId]
   );
   return result.rows;
 }
+
 
 // List pending join requests
 export async function getPendingMembers(groupId) {
@@ -81,3 +91,36 @@ export async function getMemberById(id) {
   );
   return result.rows[0];
 }
+
+export async function isMember(groupId, accountId) {
+  const result = await pool.query(
+    `SELECT 1
+     FROM group_members
+     WHERE group_id = $1
+       AND account_id = $2
+       AND status = 'accepted'`,
+    [groupId, accountId]
+  );
+  return result.rowCount > 0;
+}
+
+export async function isOwner(groupId, accountId) {
+  const result = await pool.query(
+    `SELECT 1
+     FROM groups
+     WHERE group_id = $1
+       AND owner_id = $2`,
+    [groupId, accountId]
+  );
+  return result.rowCount > 0;
+}
+
+export async function getMemberRow(groupId, accountId) {
+  const result = await pool.query(
+    `SELECT * FROM group_members
+     WHERE group_id = $1 AND account_id = $2`,
+    [groupId, accountId]
+  );
+  return result.rows[0];
+}
+

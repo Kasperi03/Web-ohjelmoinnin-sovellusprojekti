@@ -3,6 +3,7 @@ import GroupListing from "../components/groupListing.jsx";
 import CreateGroup from "../components/createGroup.jsx";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { joinGroup } from "../api/groupMemberHandler.js";
 
 export default function GroupList() {
   const [groups, setGroups] = useState([]);
@@ -24,9 +25,10 @@ export default function GroupList() {
 
   const handleCreateGroup = async (groupName) => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3001/groups", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`},
         body: JSON.stringify({ name: groupName }),
       });
 
@@ -44,7 +46,7 @@ export default function GroupList() {
       <p>This is where you can view groups.</p>
 
       <button>
-        <Link to="/group">Group</Link>
+        <Link to="/groups">Group</Link>
       </button>
       <button className="create-btn" onClick={() => setIsCreating(true)}>
         Create New Group
@@ -53,6 +55,7 @@ export default function GroupList() {
       {groups.map((group) => (
         <GroupListing
           key={group.group_id}
+          groupId={group.group_id}
           name={group.name}
           memberCount={0} // You will update this later
         />

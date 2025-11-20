@@ -13,15 +13,28 @@ export const getOne = async (id) => {
   return result.rows[0];
 };
 
-export const addOne = async (ownerId, name) => {
+export async function addOne(ownerId, name) {
+  // create the group
   const result = await pool.query(
     `INSERT INTO groups (owner_id, name)
      VALUES ($1, $2)
      RETURNING *`,
     [ownerId, name]
   );
-  return result.rows[0];
-};
+
+  const group = result.rows[0];
+  const groupId = group.group_id;
+
+  // insert the owner as an accepted member
+  await pool.query(
+    `INSERT INTO group_members (group_id, account_id, status)
+     VALUES ($1, $2, 'accepted')`,
+    [groupId, ownerId]
+  );
+
+  return group;
+}
+
 
 export const updateOne = async (id, name) => {
   const result = await pool.query(
