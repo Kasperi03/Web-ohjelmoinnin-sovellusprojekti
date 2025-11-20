@@ -2,88 +2,202 @@ import "./styles/group.css";
 import Carousel from "../components/carousel";
 import MovieInfoBar from "../components/movieInfoBar";
 import { useEffect, useState } from "react";
-import { getPendingMembers, approveMember, rejectMember } from "../api/groupMemberHandler";
-import { useParams } from "react-router-dom";
+import {
+  getPendingMembers,
+  approveMember,
+  rejectMember,
+  getGroupMembers,
+  removeMember,
+  leaveGroup
+} from "../api/groupMemberHandler";
+import { useParams, useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../api/currentUserHelper.js";
+import { deleteGroup, updateGroup } from "../api/groupHandler.js";
 
 export default function GroupPage() {
-  const { groupId } = useParams(); // <-- capture ID from /group/:groupId
-  console.log("Group ID:", groupId);
+  const { groupId } = useParams();
+  const navigate = useNavigate();
 
-  // Dummy data for the info bar
-  const totalMovies = 12;
-  const avgRating = 4.1;
-  const topGenre = "Action";
-
-  // Pending members
   const [pending, setPending] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [newName, setNewName] = useState("");
 
-  // Load pending members on mount
-  useEffect(() => {
+  // decode JWT
+  const user = getCurrentUser();
+  const userId = user?.account_id;
+
+  // dynamic role checks
+  const isOwner = members.some((m) => m.account_id === userId && m.is_owner);
+  const isMember = members.some((m) => m.account_id === userId);
+
+  // Load members + pending on mount
+ useEffect(() => {
+  loadMembers();
+}, [groupId]);
+
+useEffect(() => {
+  if (isOwner) {
     loadPending();
-  }, []);
-console.log("Group ID:", groupId); 
-  const loadPending = async () => {
+  } else {
+    setPending([]); // reset for non-owner
+  }
+}, [isOwner, groupId]);
+
+
+  // Fetch accepted members
+const loadMembers = async () => {
+  try {
+    const list = await getGroupMembers(groupId);
+    setMembers(list);
+  } catch (err) {
+    console.error("Failed to load members:", err);
+    alert("You are not a member of this group.");
+    navigate("/groupList");
+  }
+};
+
+
+  // Fetch pending requests
+const loadPending = async () => {
+  try {
+    const list = await getPendingMembers(groupId);
+    setPending(list);
+  } catch (err) {
+    console.error("Pending fetch error:", err);
+    setPending([]); // silent fail, no alerts
+  }
+};
+
+
+  // Delete group (owner only)
+  const handleDeleteGroup = async () => {
+    if (!window.confirm("Delete this group?")) return;
+
     try {
-      const list = await getPendingMembers(groupId);
-      setPending(list);
+      await deleteGroup(groupId);
+      navigate("/");
     } catch (err) {
-      console.error("Failed to load pending members:", err);
+      alert("Failed to delete group");
     }
   };
 
-  const handleApprove = async (memberId) => {
+  // Rename group (owner only)
+  const handleRenameGroup = async () => {
+    if (!newName.trim()) return;
+
     try {
-      await approveMember(groupId, memberId);
-      loadPending(); // refresh list
+      await updateGroup(groupId, newName);
+      setIsRenaming(false);
+      window.location.reload();
     } catch (err) {
-      console.error(err);
+      alert("Rename failed");
     }
+  };
+
+  // A member leaves the group
+  const handleLeave = async () => {
+    if (!window.confirm("Leave this group?")) return;
+
+    try {
+      await leaveGroup(groupId);
+      navigate("/");
+    } catch (err) {
+      alert("Could not leave group");
+    }
+  };
+
+  // Approve/reject pending
+  const handleApprove = async (memberId) => {
+    await approveMember(groupId, memberId);
+    loadPending();
+    loadMembers();
   };
 
   const handleReject = async (memberId) => {
-    try {
-      await rejectMember(groupId, memberId);
-      loadPending(); // refresh list
-    } catch (err) {
-      console.error(err);
-    }
+    await rejectMember(groupId, memberId);
+    loadPending();
+  };
+
+  const handleRemove = async (memberId) => {
+    await removeMember(groupId, memberId);
+    loadMembers();
   };
 
   return (
     <div className="group-container">
       <h1>Group Page</h1>
-      <p>This is where you can view and manage a specific group.</p>
 
-      {/* ----------------------- */}
-      {/* 🧑‍🤝‍🧑 PENDING MEMBERS UI */}
-      {/* ----------------------- */}
-      <div className="pending-members-section">
-        <h2>Pending Member Requests</h2>
+      {/* OWNER CONTROLS */}
+      {isOwner && (
+        <div className="group-owner-controls">
 
-        {pending.length === 0 && (
-          <p>No pending requests.</p>
-        )}
+          {!isRenaming ? (
+            <>
+              <button onClick={() => setIsRenaming(true)}>Rename Group</button>
+              <button onClick={handleDeleteGroup}>Delete Group</button>
+            </>
+          ) : (
+            <div className="rename-form">
+              <input
+                value={newName}
+                placeholder="New group name"
+                onChange={(e) => setNewName(e.target.value)}
+              />
+              <button onClick={handleRenameGroup}>Save</button>
+              <button onClick={() => setIsRenaming(false)}>Cancel</button>
+            </div>
+          )}
 
-        {pending.map((member) => (
-          <div key={member.id} className="pending-member-row">
-            <span>{member.username || member.email}</span>
+        </div>
+      )}
 
-            <button className="approve-btn" onClick={() => handleApprove(member.id)}>
-              Approve
-            </button>
+      {/* PENDING REQUESTS (OWNER ONLY) */}
+      {isOwner && (
+        <div className="pending-members-section">
+          <h2>Pending Requests</h2>
 
-            <button className="reject-btn" onClick={() => handleReject(member.id)}>
-              Reject
-            </button>
+          {pending.length === 0 && <p>No pending requests.</p>}
+
+          {pending.map((member) => (
+            <div key={member.id} className="pending-member-row">
+              <span>{member.username}</span>
+              <button onClick={() => handleApprove(member.id)}>Approve</button>
+              <button onClick={() => handleReject(member.id)}>Reject</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* ACCEPTED MEMBERS */}
+      <div className="members-section">
+        <h2>Members</h2>
+
+        {members.map((member) => (
+          <div key={member.id} className="member-row">
+            <span>
+              {member.username}
+              {member.is_owner && " 👑"}
+            </span>
+
+            {/* Leave button */}
+            {member.account_id === userId && !member.is_owner && (
+              <button onClick={handleLeave}>
+                Leave Group
+              </button>
+            )}
+
+            {/* Owner removing another member */}
+            {isOwner && !member.is_owner && member.account_id !== userId && (
+              <button onClick={() => handleRemove(member.id)}>
+                Remove
+              </button>
+            )}
           </div>
         ))}
       </div>
 
-      {/* ----------------------- */}
-      {/* EXISTING GROUP CONTENT  */}
-      {/* ----------------------- */}
-
-      <MovieInfoBar totalMovies={totalMovies} avgRating={avgRating} topGenre={topGenre} />
+      <MovieInfoBar totalMovies={12} avgRating={4.1} topGenre="Action" />
 
       <div className="carousel-container">
         <Carousel title="Group member's favorites" />
@@ -91,4 +205,3 @@ console.log("Group ID:", groupId);
     </div>
   );
 }
-

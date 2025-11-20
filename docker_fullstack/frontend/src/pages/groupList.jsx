@@ -46,7 +46,7 @@ export default function GroupList() {
       <p>This is where you can view groups.</p>
 
       <button>
-        <Link to="/group">Group</Link>
+        <Link to="/groups">Group</Link>
       </button>
       <button className="create-btn" onClick={() => setIsCreating(true)}>
         Create New Group

@@ -4,7 +4,7 @@ import { joinGroup } from "../api/groupMemberHandler";
 
 export default function GroupListing({groupId, name, memberCount }) {
   return (
-    <Link to={`/group/${groupId}`} className="group-link">
+    <Link to={`/groups/${groupId}`} className="group-link">
       <div className="group-block">
         <h2 className="group-name">{name}</h2>
         <span className="member-count">{memberCount}</span>

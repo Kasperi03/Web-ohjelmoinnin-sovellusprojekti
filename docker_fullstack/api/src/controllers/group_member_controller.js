@@ -6,7 +6,10 @@ import {
   removeMember,
   getAcceptedMembers,
   getPendingMembers,
-  getMemberById
+  getMemberById,
+  isMember,
+  isOwner,
+  getMemberRow
 } from "../models/group_member_model.js";
 
 import { getOne as getGroupById } from "../models/group_model.js";
@@ -102,12 +105,23 @@ export async function removeGroupMember(req, res, next) {
 export async function getGroupMembers(req, res, next) {
   try {
     const groupId = req.params.groupId;
+    const userId = req.user.account_id;
+
+    const owner = await isOwner(groupId, userId);
+    const member = await isMember(groupId, userId);
+
+    if (!owner && !member) {
+      return res.status(403).json({ error: "You are not a member of this group" });
+    }
+
     const members = await getAcceptedMembers(groupId);
     res.json(members);
+
   } catch (err) {
     next(err);
   }
 }
+
 
 // Get pending requests (owner only)
 export async function getPendingRequests(req, res, next) {
@@ -124,6 +138,39 @@ export async function getPendingRequests(req, res, next) {
     const pending = await getPendingMembers(groupId);
     res.json(pending);
 
+  } catch (err) {
+    next(err);
+  }
+}
+// Leave a group (member removing THEMSELF)
+export async function leaveGroup(req, res, next) {
+    console.log("🔥 HIT leaveGroup ROUTE");
+  console.log("PARAMS:", req.params);
+  console.log("USER:", req.user);
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.user.account_id;
+      console.log("GROUP ID:", groupId);
+    console.log("USER ID:", userId);
+
+    // Can't leave if you're not a member
+    const membership = await getMemberRow(groupId, userId);
+    console.log("MEMBERSHIP ROW:", membership);
+    if (!membership) {
+      return res.status(404).json({ error: "You are not a member of this group" });
+    }
+
+    // Owner cannot leave their own group
+    const group = await getGroupById(groupId);
+    console.log("GROUP ROW:", group);
+    if (group.owner_id === userId) {
+      return res.status(400).json({ error: "Owner cannot leave their own group" });
+    }
+
+    // Remove membership
+    await removeMember(membership.id);
+
+    res.json({ message: "You left the group" });
   } catch (err) {
     next(err);
   }
