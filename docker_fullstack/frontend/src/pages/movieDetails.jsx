@@ -1,17 +1,32 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "../api/movieDetailHandler.js";
+import { addFavorite, deleteFavorite, getFavorites } from "../api/favorites.js";
 import "./styles/movieDetails.css";
-import { addFavorite } from "../api/favorites.js";
 
 export default function MovieDetails() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [userRating, setUserRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
+  // Fetch movie details and check if it's in favorites
   useEffect(() => {
     fetchMovieDetails(id).then(setMovie);
+
+    async function checkFavorite() {
+      try {
+        const data = await getFavorites();
+        // Convert all IDs to numbers to match types
+        const favIds = data.favorites.map((f) => Number(f));
+        setIsFavorite(favIds.includes(Number(id)));
+      } catch (err) {
+        console.error("Failed to check favorite:", err);
+      }
+    }
+
+    checkFavorite();
   }, [id]);
 
   if (!movie) return <p>Loading...</p>;
@@ -19,10 +34,16 @@ export default function MovieDetails() {
   // Find official YouTube trailer
   const trailer = movie.videos?.results?.find((v) => v.type === "Trailer" && v.site === "YouTube");
 
-  const handleFavorite = async () => {
+  // Toggle favorite status in the database and update button
+  const toggleFavorite = async () => {
     try {
-      await addFavorite(id);
-      alert("Added to favorites!");
+      if (isFavorite) {
+        await deleteFavorite(id);
+        setIsFavorite(false);
+      } else {
+        await addFavorite(id);
+        setIsFavorite(true);
+      }
     } catch (error) {
       if (error.message === "User not logged in") {
         alert("Please login first.");
@@ -32,6 +53,7 @@ export default function MovieDetails() {
       }
     }
   };
+
   const handleAddToGroup = () => {
     alert("Add to group clicked");
   };
@@ -45,14 +67,14 @@ export default function MovieDetails() {
   return (
     <div className="movie-details">
       <div className="movie-top-row">
-        {/* POSTER */}
+        {/* Poster */}
         <img
           className="details-poster"
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
         />
 
-        {/* TRAILER */}
+        {/* Trailer */}
         {trailer && (
           <div className="details-trailer-box">
             <h2>Trailer</h2>
@@ -60,27 +82,26 @@ export default function MovieDetails() {
               src={`https://www.youtube.com/embed/${trailer.key}`}
               title="Trailer"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         )}
       </div>
 
-      {/* DESCRIPTION + ACTIONS BELOW */}
       <div className="details-bottom">
         <h1>{movie.title}</h1>
         <p className="details-overview">{movie.overview}</p>
 
-        {/* Buttons */}
+        {/* Action buttons */}
         <div className="movie-actions">
-          <button className="fav-btn" onClick={handleFavorite}>
-            ❤️ Favorite
+          <button className="fav-btn" onClick={toggleFavorite}>
+            {isFavorite ? "💔 Unfavorite" : "❤️ Favorite"}
           </button>
           <button className="group-btn" onClick={handleAddToGroup}>
             ➕ Add to Group
           </button>
         </div>
 
-        {/* Rating */}
+        {/* Rating section */}
         <div className="rating-section">
           <h3>Your Rating</h3>
           <div className="stars">
@@ -96,7 +117,7 @@ export default function MovieDetails() {
           </div>
         </div>
 
-        {/* Review */}
+        {/* Review section */}
         <div className="review-section">
           <h3>Your Review</h3>
           <textarea

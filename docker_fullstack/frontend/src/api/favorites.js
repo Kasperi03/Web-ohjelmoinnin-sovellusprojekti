@@ -42,3 +42,34 @@ export async function getFavorites() {
 
   return await response.json();
 }
+export async function deleteFavorite(tmdbId) {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("User not logged in");
+
+  try {
+    const response = await fetch(`${API_URL}/${tmdbId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Get the full text response for debugging
+      const text = await response.text();
+      console.error("Delete favorite response:", text);
+      let errorData = {};
+      try {
+        errorData = JSON.parse(text);
+      } catch (e) {
+        // response was not JSON
+      }
+      throw new Error(errorData.error || "Failed to remove favorite");
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error in deleteFavorite:", err);
+    throw err;
+  }
+}
