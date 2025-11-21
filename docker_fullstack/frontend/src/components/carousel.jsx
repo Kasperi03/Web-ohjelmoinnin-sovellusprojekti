@@ -59,7 +59,8 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
                 <div className="slide-overlay">
                   <div className="title-overlay"> {movie.title} </div>
                   <div className="rating"> rating: {movie.vote_average?.toFixed(1)}/10</div>
-                </div> {/* Overlay that shows movie title and rating on hover */}
+                </div>{" "}
+                {/* Overlay that shows movie title and rating on hover */}
               </div>
             ))}
           </div>

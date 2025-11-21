@@ -1,13 +1,13 @@
 import express from "express";
-import { postFavorite, getFavorites } from "../controllers/favorite_controller.js";
-import { authMiddleware } from "../middleware/auth_middleware.js";
+import { postFavorite, getFavorites, removeFavorite } from "../controllers/favorite_controller.js";
 
-const FavoriteRouter = express.Router(); // You named it FavoriteRouter here
+import { auth } from "../helper/auth.js";
 
-// FIX: Use FavoriteRouter.post, not router.post
-FavoriteRouter.post("/", authMiddleware, postFavorite);
+const FavoriteRouter = express.Router();
 
-// FIX: Use FavoriteRouter.get, not router.get
-FavoriteRouter.get("/", authMiddleware, getFavorites);
+FavoriteRouter.post("/", auth, postFavorite);
 
+FavoriteRouter.get("/", auth, getFavorites);
+
+FavoriteRouter.delete("/:tmdbId", auth, removeFavorite);
 export default FavoriteRouter;

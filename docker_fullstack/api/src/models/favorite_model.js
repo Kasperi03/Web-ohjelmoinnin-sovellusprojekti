@@ -34,3 +34,14 @@ export async function getFavoritesByUser(accountId) {
   );
   return result.rows.map((r) => r.api_id);
 }
+
+export async function deleteFavorite(accountId, tmdbId) {
+  const result = await pool.query(
+    `DELETE FROM favorites 
+     WHERE account_id = $1 
+     AND movie_id = (SELECT movie_id FROM movies WHERE api_id = $2)`,
+    [accountId, tmdbId]
+  );
+
+  return result.rowCount > 0;
+}

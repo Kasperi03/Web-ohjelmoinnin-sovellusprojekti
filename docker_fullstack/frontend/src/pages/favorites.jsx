@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "./styles/favorites.css";
-// Make sure these paths match your actual file names exactly!
 import Carousel from "../components/carousel.jsx";
 import FavoriteInfo from "../components/movieInfoBar.jsx";
 import { getFavorites } from "../api/favorites.js";
@@ -46,12 +45,10 @@ export default function Favorites() {
 
   return (
     <div className="favorites-container">
-      {/* Shows the count of favorites */}
       <FavoriteInfo count={favoriteMovies.length} />
 
       <div className="carousel-container">
         {favoriteMovies.length > 0 ? (
-          /* Reuse the Carousel component */
           <Carousel title="My Favorites" movies={favoriteMovies} visibleSlides={4} />
         ) : (
           <div className="no-favorites">
