@@ -13,6 +13,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../api/currentUserHelper.js";
 import { deleteGroup, updateGroup } from "../api/groupHandler.js";
+import { getGroupLayout, saveGroupLayout } from "../api/groupLayoutHandler";
 
 export default function GroupPage() {
   const { groupId } = useParams();
@@ -30,6 +31,13 @@ export default function GroupPage() {
   // dynamic role checks
   const isOwner = members.some((m) => m.account_id === userId && m.is_owner);
   const isMember = members.some((m) => m.account_id === userId);
+
+  const [isCustomizing, setIsCustomizing] = useState(false);
+  const [layoutConfig, setLayoutConfig] = useState([
+    "pending",
+    "members",
+    "stats"
+  ]);
 
   // Load members + pending on mount
  useEffect(() => {
@@ -124,6 +132,24 @@ const loadPending = async () => {
     loadMembers();
   };
 
+const moveUp = (index) => {
+  if (index === 0) return;
+  setLayoutConfig((prev) => {
+    const arr = [...prev];
+    [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+    return arr;
+  });
+};
+
+const moveDown = (index) => {
+  if (index === layoutConfig.length - 1) return;
+  setLayoutConfig((prev) => {
+    const arr = [...prev];
+    [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
+    return arr;
+  });
+};
+
   return (
     <div className="group-container">
       <h1>Group Page</h1>
@@ -136,6 +162,7 @@ const loadPending = async () => {
             <>
               <button onClick={() => setIsRenaming(true)}>Rename Group</button>
               <button onClick={handleDeleteGroup}>Delete Group</button>
+              <button onClick={() => setIsCustomizing(true)}>Customize Page</button>
             </>
           ) : (
             <div className="rename-form">
@@ -152,27 +179,43 @@ const loadPending = async () => {
         </div>
       )}
 
-      {/* PENDING REQUESTS (OWNER ONLY) */}
-      {isOwner && (
-        <div className="pending-members-section">
-          <h2>Pending Requests</h2>
-
-          {pending.length === 0 && <p>No pending requests.</p>}
-
-          {pending.map((member) => (
-            <div key={member.id} className="pending-member-row">
-              <span>{member.username}</span>
-              <button onClick={() => handleApprove(member.id)}>Approve</button>
-              <button onClick={() => handleReject(member.id)}>Reject</button>
+      {/* setIsCustomizer (OWNER ONLY) */}
+      {isCustomizing && isOwner && (
+        <div className="customize-layout">
+          <h2>Customize Layout</h2>
+          {layoutConfig.map((section, index) => (
+            <div key={section} className="layout-item">
+              <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+              <button onClick={() => moveUp(index)}>up</button>
+              <button onClick={() => moveDown(index)}>down</button>
             </div>
           ))}
+          <button onClick={() => setIsCustomizing(false)}>Done</button>
         </div>
-      )}
+      )
+      }
 
-      {/* ACCEPTED MEMBERS */}
-      <div className="members-section">
+      {layoutConfig.map((section) => {
+  if (section === "pending" && isOwner) {
+    return (
+      <div key="pending" className="pending-members-section">
+        <h2>Pending Requests</h2>
+        {pending.length === 0 && <p>No pending requests.</p>}
+        {pending.map((member) => (
+          <div key={member.id} className="pending-member-row">
+            <span>{member.username}</span>
+            <button onClick={() => handleApprove(member.id)}>Approve</button>
+            <button onClick={() => handleReject(member.id)}>Reject</button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (section === "members") {
+    return (
+      <div key="members" className="members-section">
         <h2>Members</h2>
-
         {members.map((member) => (
           <div key={member.id} className="member-row">
             <span>
@@ -180,28 +223,34 @@ const loadPending = async () => {
               {member.is_owner && " 👑"}
             </span>
 
-            {/* Leave button */}
             {member.account_id === userId && !member.is_owner && (
-              <button onClick={handleLeave}>
-                Leave Group
-              </button>
+              <button onClick={handleLeave}>Leave Group</button>
             )}
 
-            {/* Owner removing another member */}
             {isOwner && !member.is_owner && member.account_id !== userId && (
-              <button onClick={() => handleRemove(member.id)}>
-                Remove
-              </button>
+              <button onClick={() => handleRemove(member.id)}>Remove</button>
             )}
           </div>
         ))}
       </div>
+    );
+  }
 
-      <MovieInfoBar totalMovies={12} avgRating={4.1} topGenre="Action" />
+  if (section === "stats") {
+    return (
+      <MovieInfoBar
+        key="stats"
+        totalMovies={12}
+        avgRating={4.1}
+        topGenre="Action"
+      />
+    );
+  }
+  return null;
+})}
 
-      <div className="carousel-container">
-        <Carousel title="Group member's favorites" />
-      </div>
-    </div>
-  );
+<div className="favorites-section">
+  <Carousel title="Group member's favorites" />
+</div>
+  </div> );
 }

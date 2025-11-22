@@ -1,7 +1,8 @@
 .carousel-container {
   width: 100%;
   max-width: 1200px;
-  margin: 40px auto;
+  margin: 0 auto;      
+  padding: 0;          
 }
 
 .carousel-title-bar {
@@ -62,6 +63,7 @@
 .carousel-row-wrapper {
   overflow: hidden;
   width: 100%;
+  height: auto;
 }
 
 .carousel-row {
@@ -71,8 +73,10 @@
 }
 
 .carousel-slide {
+  position: relative;
   min-width: calc(25% - 10px);
-  height: 400px;
+  height: 300px;
+  max-height: 40vh;
   flex-shrink: 0;
   border-radius: 10px;
   overflow: hidden;
@@ -131,3 +135,11 @@
   font-weight: 700;
   transform: translateX(8px);
 }
+
+.favorites-section {
+  margin-top: 40px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
