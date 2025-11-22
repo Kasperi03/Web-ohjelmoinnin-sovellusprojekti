@@ -1,7 +1,8 @@
 import "./styles/group.css";
 import Carousel from "../components/carousel";
 import MovieInfoBar from "../components/movieInfoBar";
-import { useEffect, useState } from "react";
+import { fetchMovieDetails } from "../api/movieDetailHandler.js";
+import { useEffect, useState,useMemo } from "react";
 import {
   getPendingMembers,
   approveMember,
@@ -22,6 +23,42 @@ export default function GroupPage() {
   const [members, setMembers] = useState([]);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState("");
+  const [movies, setMovies] = useState([]);
+
+useEffect(() => {
+  async function loadMovies() {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/group-movies/${groupId}/movies`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+      );
+
+      const ids = await res.json();
+
+      // ❗ If user is not authorized or not a member → backend returns an object, NOT an array
+      if (!Array.isArray(ids)) {
+        console.warn("User cannot view movies:", ids);
+        return; // <-- prevents ids.map crash
+      }
+
+      // Fetch TMDB details for each movie
+      const movies = await Promise.all(
+        ids.map((entry) => fetchMovieDetails(entry.api_id))
+      );
+
+      setMovies(movies);
+    } catch (err) {
+      console.error("Failed to load group movies:", err);
+    }
+  }
+
+  loadMovies();
+}, [groupId]);
+
 
   // decode JWT
   const user = getCurrentUser();
@@ -32,42 +69,42 @@ export default function GroupPage() {
   const isMember = members.some((m) => m.account_id === userId);
 
   // Load members + pending on mount
- useEffect(() => {
-  loadMembers();
-}, [groupId]);
+  useEffect(() => {
+    loadMembers();
+  }, [groupId]);
 
-useEffect(() => {
-  if (isOwner) {
-    loadPending();
-  } else {
-    setPending([]); // reset for non-owner
-  }
-}, [isOwner, groupId]);
+  useEffect(() => {
+    if (isOwner) {
+      loadPending();
+    } else {
+      setPending([]); // reset for non-owner
+    }
+  }, [isOwner, groupId]);
 
 
   // Fetch accepted members
-const loadMembers = async () => {
-  try {
-    const list = await getGroupMembers(groupId);
-    setMembers(list);
-  } catch (err) {
-    console.error("Failed to load members:", err);
-    alert("You are not a member of this group.");
-    navigate("/groupList");
-  }
-};
+  const loadMembers = async () => {
+    try {
+      const list = await getGroupMembers(groupId);
+      setMembers(list);
+    } catch (err) {
+      console.error("Failed to load members:", err);
+      alert("You are not a member of this group.");
+      navigate("/groupList");
+    }
+  };
 
 
   // Fetch pending requests
-const loadPending = async () => {
-  try {
-    const list = await getPendingMembers(groupId);
-    setPending(list);
-  } catch (err) {
-    console.error("Pending fetch error:", err);
-    setPending([]); // silent fail, no alerts
-  }
-};
+  const loadPending = async () => {
+    try {
+      const list = await getPendingMembers(groupId);
+      setPending(list);
+    } catch (err) {
+      console.error("Pending fetch error:", err);
+      setPending([]); // silent fail, no alerts
+    }
+  };
 
 
   // Delete group (owner only)
@@ -124,14 +161,62 @@ const loadPending = async () => {
     loadMembers();
   };
 
+const { totalMovies, avgRating, topGenre } = useMemo(() => {
+  if (!movies.length) {
+    return { totalMovies: 0, avgRating: 0, topGenre: "N/A" };
+  }
+
+  const totalMovies = movies.length;
+
+  const avgRating =
+    movies.reduce(
+      (sum, m) => sum + (typeof m.vote_average === "number" ? m.vote_average : 0),
+      0
+    ) / totalMovies;
+
+  let topGenre = "N/A";
+  const genreCount = new Map();
+
+  for (const m of movies) {
+    if (Array.isArray(m.genres)) {
+      m.genres.forEach((g) => {
+        genreCount.set(g.name, (genreCount.get(g.name) || 0) + 1);
+      });
+    }
+  }
+
+  if (genreCount.size) {
+    const [bestGenre] = [...genreCount.entries()].sort((a, b) => b[1] - a[1])[0];
+    topGenre = bestGenre;
+  }
+
+  return {
+    totalMovies,
+    avgRating,
+    topGenre,
+  };
+}, [movies]);
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className="group-container">
-      <h1>Group Page</h1>
 
-      {/* OWNER CONTROLS */}
-      {isOwner && (
+  {/* OWNER / MEMBERS SECTION (TOP) */}
+  <div className="section-box">
+    {/* Owner controls, pending, members */}
+    {isOwner && (
+      <>
+        {/* Owner Controls */}
         <div className="group-owner-controls">
-
           {!isRenaming ? (
             <>
               <button onClick={() => setIsRenaming(true)}>Rename Group</button>
@@ -148,17 +233,12 @@ const loadPending = async () => {
               <button onClick={() => setIsRenaming(false)}>Cancel</button>
             </div>
           )}
-
         </div>
-      )}
 
-      {/* PENDING REQUESTS (OWNER ONLY) */}
-      {isOwner && (
+        {/* Pending */}
         <div className="pending-members-section">
           <h2>Pending Requests</h2>
-
           {pending.length === 0 && <p>No pending requests.</p>}
-
           {pending.map((member) => (
             <div key={member.id} className="pending-member-row">
               <span>{member.username}</span>
@@ -167,41 +247,45 @@ const loadPending = async () => {
             </div>
           ))}
         </div>
-      )}
+      </>
+    )}
 
-      {/* ACCEPTED MEMBERS */}
-      <div className="members-section">
-        <h2>Members</h2>
-
-        {members.map((member) => (
-          <div key={member.id} className="member-row">
-            <span>
-              {member.username}
-              {member.is_owner && " 👑"}
-            </span>
-
-            {/* Leave button */}
-            {member.account_id === userId && !member.is_owner && (
-              <button onClick={handleLeave}>
-                Leave Group
-              </button>
-            )}
-
-            {/* Owner removing another member */}
-            {isOwner && !member.is_owner && member.account_id !== userId && (
-              <button onClick={() => handleRemove(member.id)}>
-                Remove
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <MovieInfoBar totalMovies={12} avgRating={4.1} topGenre="Action" />
-
-      <div className="carousel-container">
-        <Carousel title="Group member's favorites" />
-      </div>
+    {/* Members */}
+    <div className="members-section">
+      <h2>Members</h2>
+      {members.map((member) => (
+        <div key={member.id} className="member-row">
+          <span>
+            {member.username}
+            {member.is_owner && " 👑"}
+          </span>
+          {member.account_id === userId && !member.is_owner && (
+            <button onClick={handleLeave}>Leave Group</button>
+          )}
+          {isOwner && !member.is_owner && member.account_id !== userId && (
+            <button onClick={() => handleRemove(member.id)}>Remove</button>
+          )}
+        </div>
+      ))}
     </div>
+  </div>
+
+  {/* MOVIE INFO BAR (MIDDLE) */}
+  <div className="section-box">
+    <MovieInfoBar
+      totalMovies={totalMovies}
+      avgRating={avgRating}
+      topGenre={topGenre}
+    />
+  </div>
+
+  {/* CAROUSEL (BOTTOM) */}
+  <div className="section-box carousel-box">
+  <Carousel title="Group Movies" movies={movies} />
+</div>
+
+
+</div>
+
   );
 }

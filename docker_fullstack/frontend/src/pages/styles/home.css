@@ -14,9 +14,7 @@ body {
   padding-top: 65px;
   min-height: 200vh;
 }
-.carousel-container {
-  transform: translateY(-670px);
-}
+
 .carousel-container :nth-child(2) {
   margin-top: 1px;
 }

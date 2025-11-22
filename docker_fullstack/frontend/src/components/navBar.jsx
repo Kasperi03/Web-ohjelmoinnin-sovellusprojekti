@@ -2,12 +2,15 @@ import "./styles/navBar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../img/logo.png";
+import { getCurrentUser } from "../api/currentUserHelper";
+
 
 export default function Navbar() {
   const [term, setTerm] = useState("");
   const [type, setType] = useState("movie");
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
+  
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
@@ -61,7 +64,8 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-right">
-        <Link to="/favorites">Favorites</Link>
+        {isLoggedIn && <Link to="/favorites">Favorites</Link>}
+
 
         {isLoggedIn ? (
           <div className="navbar-profile">
