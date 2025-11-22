@@ -1,5 +1,3 @@
-// frontend/src/api/groupMember.js
-
 const BASE_URL = "http://localhost:3001";
 
 // Join group

@@ -1,10 +1,20 @@
 .group-container {
-  text-align: center;
-  padding-top: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
-.carousel-container {
-  margin-top: 700px;
+
+.section-box {
+  background: #1c1c1c;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
+
+
 .group-owner-controls {
   margin-bottom: 20px;
 }
@@ -31,4 +41,15 @@
 .rename-form input {
   margin-right: 8px;
   padding: 6px;
+}
+
+.section-box.carousel-box {
+  padding: 10px 15px;      /* smaller padding */
+  height: auto;            /* prevents stretching */
+  min-height: auto;        /* prevents flex from forcing size */
+  display: block;          /* stops flex expansion */
+}
+
+.section-box {
+  border: 3px solid red !important;
 }

@@ -1,4 +1,4 @@
-import { getAll, getOne, addOne, updateOne, deleteOne } from "../models/group_model.js";
+import { getAll, getOne, addOne, updateOne, deleteOne, findGroupsForUser } from "../models/group_model.js";
 
 export async function getGroups(req, res, next) {
   try {
@@ -69,3 +69,17 @@ export async function deleteGroup(req, res, next) {
     next(err);
   }
 }
+
+
+export const getGroupsForUser = async (req, res) => {
+  try {
+    const accountId = req.user.account_id;
+    const groups = await findGroupsForUser(accountId);
+    res.json(groups);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch user's groups" });
+  }
+};
+
+

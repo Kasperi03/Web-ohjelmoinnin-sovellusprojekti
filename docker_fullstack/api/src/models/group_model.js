@@ -54,3 +54,17 @@ export const deleteOne = async (id) => {
   );
   return result.rows[0];
 };
+
+
+export const findGroupsForUser = async (accountId) => {
+  const result = await pool.query(
+    `SELECT g.*
+     FROM groups g
+     JOIN group_members gm ON gm.group_id = g.group_id
+     WHERE gm.account_id = $1`,
+    [accountId]
+  );
+
+  return result.rows;
+};
+

@@ -1,33 +1,40 @@
-/* Actual info bar */
+/* Container fix — NO extra vertical space */
+.info-bar-container {
+  display: flex;
+  justify-content: center;
+  padding: 0;               /* remove top/bottom padding */
+  margin: 0;                /* prevent spacing inflation */
+}
+
+/* Actual info bar — auto height */
 .info-bar {
   display: flex;
   justify-content: space-around;
+  align-items: center;       /* keeps items centered vertically */
   max-width: 900px;
   width: 100%;
   background-color: #1c1c1c;
   color: white;
   font-family: sans-serif;
   border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.info-bar-container {
-  display: flex;
-  justify-content: center;
-  padding: 0 20px;
+  padding: 12px 20px;        /* smaller padding = smaller box */
+  margin: 0 auto;            /* remove bottom margin that added space */
+  gap: 20px;
 }
 
+/* Items */
 .info-item {
   text-align: center;
 }
 
+/* Values and labels */
 .info-value {
-  margin-top: 5px;
+  margin-top: 4px;
   font-size: 1.2rem;
   color: #aaa;
 }
 
 .info-label {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: bold;
 }
