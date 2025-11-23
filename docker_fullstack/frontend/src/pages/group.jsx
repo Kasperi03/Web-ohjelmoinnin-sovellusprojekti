@@ -1,7 +1,8 @@
 import "./styles/group.css";
 import Carousel from "../components/carousel";
 import MovieInfoBar from "../components/movieInfoBar";
-import { useEffect, useState } from "react";
+import { fetchMovieDetails } from "../api/movieDetailHandler.js";
+import { useEffect, useState,useMemo } from "react";
 import {
   getPendingMembers,
   approveMember,
@@ -13,7 +14,6 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../api/currentUserHelper.js";
 import { deleteGroup, updateGroup } from "../api/groupHandler.js";
-import { getGroupLayout, saveGroupLayout } from "../api/groupLayoutHandler";
 
 export default function GroupPage() {
   const { groupId } = useParams();
@@ -23,6 +23,42 @@ export default function GroupPage() {
   const [members, setMembers] = useState([]);
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState("");
+  const [movies, setMovies] = useState([]);
+
+useEffect(() => {
+  async function loadMovies() {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/group-movies/${groupId}/movies`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
+      );
+
+      const ids = await res.json();
+
+      // ❗ If user is not authorized or not a member → backend returns an object, NOT an array
+      if (!Array.isArray(ids)) {
+        console.warn("User cannot view movies:", ids);
+        return; // <-- prevents ids.map crash
+      }
+
+      // Fetch TMDB details for each movie
+      const movies = await Promise.all(
+        ids.map((entry) => fetchMovieDetails(entry.api_id))
+      );
+
+      setMovies(movies);
+    } catch (err) {
+      console.error("Failed to load group movies:", err);
+    }
+  }
+
+  loadMovies();
+}, [groupId]);
+
 
   // decode JWT
   const user = getCurrentUser();
@@ -32,50 +68,43 @@ export default function GroupPage() {
   const isOwner = members.some((m) => m.account_id === userId && m.is_owner);
   const isMember = members.some((m) => m.account_id === userId);
 
-  const [isCustomizing, setIsCustomizing] = useState(false);
-  const [layoutConfig, setLayoutConfig] = useState([
-    "pending",
-    "members",
-    "stats"
-  ]);
-
   // Load members + pending on mount
- useEffect(() => {
-  loadMembers();
-}, [groupId]);
+  useEffect(() => {
+    loadMembers();
+  }, [groupId]);
 
-useEffect(() => {
-  if (isOwner) {
-    loadPending();
-  } else {
-    setPending([]); // reset for non-owner
-  }
-}, [isOwner, groupId]);
+  useEffect(() => {
+    if (isOwner) {
+      loadPending();
+    } else {
+      setPending([]); // reset for non-owner
+    }
+  }, [isOwner, groupId]);
 
 
   // Fetch accepted members
-const loadMembers = async () => {
-  try {
-    const list = await getGroupMembers(groupId);
-    setMembers(list);
-  } catch (err) {
-    console.error("Failed to load members:", err);
-    alert("You are not a member of this group.");
-    navigate("/groupList");
-  }
-};
+  const loadMembers = async () => {
+    try {
+      const list = await getGroupMembers(groupId);
+      setMembers(list);
+    } catch (err) {
+      console.error("Failed to load members:", err);
+      alert("You are not a member of this group.");
+      navigate("/groupList");
+    }
+  };
 
 
   // Fetch pending requests
-const loadPending = async () => {
-  try {
-    const list = await getPendingMembers(groupId);
-    setPending(list);
-  } catch (err) {
-    console.error("Pending fetch error:", err);
-    setPending([]); // silent fail, no alerts
-  }
-};
+  const loadPending = async () => {
+    try {
+      const list = await getPendingMembers(groupId);
+      setPending(list);
+    } catch (err) {
+      console.error("Pending fetch error:", err);
+      setPending([]); // silent fail, no alerts
+    }
+  };
 
 
   // Delete group (owner only)
@@ -132,37 +161,66 @@ const loadPending = async () => {
     loadMembers();
   };
 
-const moveUp = (index) => {
-  if (index === 0) return;
-  setLayoutConfig((prev) => {
-    const arr = [...prev];
-    [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
-    return arr;
-  });
-};
+const { totalMovies, avgRating, topGenre } = useMemo(() => {
+  if (!movies.length) {
+    return { totalMovies: 0, avgRating: 0, topGenre: "N/A" };
+  }
 
-const moveDown = (index) => {
-  if (index === layoutConfig.length - 1) return;
-  setLayoutConfig((prev) => {
-    const arr = [...prev];
-    [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
-    return arr;
-  });
-};
+  const totalMovies = movies.length;
+
+  const avgRating =
+    movies.reduce(
+      (sum, m) => sum + (typeof m.vote_average === "number" ? m.vote_average : 0),
+      0
+    ) / totalMovies;
+
+  let topGenre = "N/A";
+  const genreCount = new Map();
+
+  for (const m of movies) {
+    if (Array.isArray(m.genres)) {
+      m.genres.forEach((g) => {
+        genreCount.set(g.name, (genreCount.get(g.name) || 0) + 1);
+      });
+    }
+  }
+
+  if (genreCount.size) {
+    const [bestGenre] = [...genreCount.entries()].sort((a, b) => b[1] - a[1])[0];
+    topGenre = bestGenre;
+  }
+
+  return {
+    totalMovies,
+    avgRating,
+    topGenre,
+  };
+}, [movies]);
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="group-container">
-      <h1>Group Page</h1>
 
-      {/* OWNER CONTROLS */}
-      {isOwner && (
+  {/* OWNER / MEMBERS SECTION (TOP) */}
+  <div className="section-box">
+    {/* Owner controls, pending, members */}
+    {isOwner && (
+      <>
+        {/* Owner Controls */}
         <div className="group-owner-controls">
-
           {!isRenaming ? (
             <>
               <button onClick={() => setIsRenaming(true)}>Rename Group</button>
               <button onClick={handleDeleteGroup}>Delete Group</button>
-              <button onClick={() => setIsCustomizing(true)}>Customize Page</button>
             </>
           ) : (
             <div className="rename-form">
@@ -175,82 +233,59 @@ const moveDown = (index) => {
               <button onClick={() => setIsRenaming(false)}>Cancel</button>
             </div>
           )}
-
         </div>
-      )}
 
-      {/* setIsCustomizer (OWNER ONLY) */}
-      {isCustomizing && isOwner && (
-        <div className="customize-layout">
-          <h2>Customize Layout</h2>
-          {layoutConfig.map((section, index) => (
-            <div key={section} className="layout-item">
-              <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
-              <button onClick={() => moveUp(index)}>up</button>
-              <button onClick={() => moveDown(index)}>down</button>
+        {/* Pending */}
+        <div className="pending-members-section">
+          <h2>Pending Requests</h2>
+          {pending.length === 0 && <p>No pending requests.</p>}
+          {pending.map((member) => (
+            <div key={member.id} className="pending-member-row">
+              <span>{member.username}</span>
+              <button onClick={() => handleApprove(member.id)}>Approve</button>
+              <button onClick={() => handleReject(member.id)}>Reject</button>
             </div>
           ))}
-          <button onClick={() => setIsCustomizing(false)}>Done</button>
         </div>
-      )
-      }
+      </>
+    )}
 
-      {layoutConfig.map((section) => {
-  if (section === "pending" && isOwner) {
-    return (
-      <div key="pending" className="pending-members-section">
-        <h2>Pending Requests</h2>
-        {pending.length === 0 && <p>No pending requests.</p>}
-        {pending.map((member) => (
-          <div key={member.id} className="pending-member-row">
-            <span>{member.username}</span>
-            <button onClick={() => handleApprove(member.id)}>Approve</button>
-            <button onClick={() => handleReject(member.id)}>Reject</button>
-          </div>
-        ))}
-      </div>
-    );
-  }
+    {/* Members */}
+    <div className="members-section">
+      <h2>Members</h2>
+      {members.map((member) => (
+        <div key={member.id} className="member-row">
+          <span>
+            {member.username}
+            {member.is_owner && " 👑"}
+          </span>
+          {member.account_id === userId && !member.is_owner && (
+            <button onClick={handleLeave}>Leave Group</button>
+          )}
+          {isOwner && !member.is_owner && member.account_id !== userId && (
+            <button onClick={() => handleRemove(member.id)}>Remove</button>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
 
-  if (section === "members") {
-    return (
-      <div key="members" className="members-section">
-        <h2>Members</h2>
-        {members.map((member) => (
-          <div key={member.id} className="member-row">
-            <span>
-              {member.username}
-              {member.is_owner && " 👑"}
-            </span>
+  {/* MOVIE INFO BAR (MIDDLE) */}
+  <div className="section-box">
+    <MovieInfoBar
+      totalMovies={totalMovies}
+      avgRating={avgRating}
+      topGenre={topGenre}
+    />
+  </div>
 
-            {member.account_id === userId && !member.is_owner && (
-              <button onClick={handleLeave}>Leave Group</button>
-            )}
-
-            {isOwner && !member.is_owner && member.account_id !== userId && (
-              <button onClick={() => handleRemove(member.id)}>Remove</button>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (section === "stats") {
-    return (
-      <MovieInfoBar
-        key="stats"
-        totalMovies={12}
-        avgRating={4.1}
-        topGenre="Action"
-      />
-    );
-  }
-  return null;
-})}
-
-<div className="favorites-section">
-  <Carousel title="Group member's favorites" />
+  {/* CAROUSEL (BOTTOM) */}
+  <div className="section-box carousel-box">
+  <Carousel title="Group Movies" movies={movies} />
 </div>
-  </div> );
+
+
+</div>
+
+  );
 }

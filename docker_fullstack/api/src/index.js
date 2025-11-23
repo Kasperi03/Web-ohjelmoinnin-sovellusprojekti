@@ -8,7 +8,7 @@ import GroupMemberRouter from "./routers/group_member_router.js";
 import loginRouter from "./routers/login_router.js";
 import ProfileRouter from "./routers/profile_router.js";
 import FavoriteRouter from "./routers/favorite_router.js";
-/*import customizeLayoutRouter from "./routers/customize_layout_router.js";*/
+import GroupMovieRouter from "./routers/group_movies_router.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -26,6 +26,8 @@ app.get("/", (req, res) => {
 app.use("/groups", GroupMemberRouter);
 // Group routes
 app.use("/groups", GroupRouter);
+app.use("/group-movies", GroupMovieRouter);
+
 
 
 
@@ -35,8 +37,6 @@ app.use("/login", loginRouter);
 app.use("/profile", ProfileRouter);
 
 app.use("/api/favorites", FavoriteRouter);
-
-/*app.use("/customize", customizeLayoutRouter)*/
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
