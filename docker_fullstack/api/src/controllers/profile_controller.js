@@ -8,7 +8,7 @@ import {
 
 export async function getMyProfile(req, res, next) {
   try {
-    const user = await getUserById(req.user.id);
+    const user = await getUserById(req.user.account_id);
     res.json(user);
   } catch (err) {
     next(err);
@@ -22,7 +22,7 @@ export async function updateEmail(req, res, next) {
     const valid = await checkPassword(req.user.email, password);
     if (!valid) return res.status(401).json({ error: "Invalid password" });
 
-    const updated = await updateEmailDB(req.user.id, newEmail);
+    const updated = await updateEmailDB(req.user.account_id, newEmail);
     res.json(updated);
   } catch (err) {
     next(err);
@@ -36,7 +36,7 @@ export async function updateUsername(req, res, next) {
     const valid = await checkPassword(req.user.email, password);
     if (!valid) return res.status(401).json({ error: "Invalid password" });
 
-    const updated = await updateUsernameDB(req.user.id, newUsername);
+    const updated = await updateUsernameDB(req.user.account_id, newUsername);
     res.json(updated);
   } catch (err) {
     next(err);
@@ -47,8 +47,13 @@ export async function updatePassword(req, res, next) {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    const updated = await changePasswordDB(req.user.id, oldPassword, newPassword);
-    if (!updated) return res.status(401).json({ error: "Old password incorrect" });
+    const updated = await changePasswordDB(
+      req.user.account_id,
+      oldPassword,
+      newPassword
+    );
+    if (!updated)
+      return res.status(401).json({ error: "Old password incorrect" });
 
     res.json({ message: "Password updated" });
   } catch (err) {
