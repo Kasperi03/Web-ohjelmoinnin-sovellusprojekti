@@ -36,3 +36,12 @@ export function changePassword(oldPassword, newPassword) {
     body: JSON.stringify({ oldPassword, newPassword }),
   }).then((r) => r.json());
 }
+
+
+
+export function deleteAccount() {
+  return fetch(BASE_URL + "/login/delete", {
+    method: "DELETE",
+    headers: headers(),
+  }).then((r) => r.json());
+}

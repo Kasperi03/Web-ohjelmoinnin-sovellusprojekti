@@ -17,7 +17,7 @@ export async function createAccount(username, email, password) {
 
 export async function findUserByEmail(email) {
   const result = await pool.query(
-    "SELECT account_id, email, password_hash FROM account WHERE email = $1",
+    "SELECT account_id, username, email, password_hash FROM account WHERE email = $1",
     [email]
   );
 
@@ -77,7 +77,6 @@ export async function updateEmail(accountId, newEmail) {
 }
 
 export async function changePassword(accountId, currentPassword, newPassword) {
-
   const result = await pool.query(
     "SELECT password_hash FROM account WHERE account_id = $1",
     [accountId]
