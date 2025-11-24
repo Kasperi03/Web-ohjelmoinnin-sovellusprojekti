@@ -14,6 +14,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../api/currentUserHelper.js";
 import { deleteGroup, updateGroup } from "../api/groupHandler.js";
+import { getGroupLayout, saveGroupLayout } from "../api/groupLayoutHandler";
 
 export default function GroupPage() {
   const { groupId } = useParams();
@@ -24,6 +25,38 @@ export default function GroupPage() {
   const [isRenaming, setIsRenaming] = useState(false);
   const [newName, setNewName] = useState("");
   const [movies, setMovies] = useState([]);
+  const [layoutConfig, setLayoutConfig] = useState([]);
+  const [isCustomizing, setIsCustomizing] = useState(false);
+
+
+useEffect(() => {
+  async function fetchLayout() {
+    try {
+      const data = await getGroupLayout(groupId);
+      const layoutArray = Array.isArray(data) ? data : data.layout;
+      setLayoutConfig(layoutArray || ["pending", "members", "stats"]);
+      console.log("Fetched layout:", layoutArray);
+    } catch (err) {
+      console.error("Failed to fetch layout", err);
+      setLayoutConfig(["pending", "members", "stats"]);
+    }
+  }
+
+  fetchLayout();
+}, [groupId]);
+
+const handleCancelCustomize = async () => {
+  try {
+    const data = await getGroupLayout(groupId);
+      const layoutArray = Array.isArray(data) ? data : data.layout;
+      setLayoutConfig(layoutArray || ["pending", "members", "stats"]);
+  } catch (err) {
+    console.error("Failed to fetch layout on cancel", err);
+    setLayoutConfig(["pending", "members", "stats"]);
+  } finally {
+    setIsCustomizing(false);
+  }
+};
 
 useEffect(() => {
   async function loadMovies() {
@@ -197,14 +230,23 @@ const { totalMovies, avgRating, topGenre } = useMemo(() => {
   };
 }, [movies]);
 
+const moveUp = (index) => {
+  if (index === 0) return;
+  setLayoutConfig((prev) => {
+    const arr = [...prev];
+    [arr[index - 1], arr[index]] = [arr[index], arr[index - 1]];
+    return arr;
+  });
+};
 
-
-
-
-
-
-
-
+const moveDown = (index) => {
+  if (index === layoutConfig.length - 1) return;
+  setLayoutConfig((prev) => {
+    const arr = [...prev];
+    [arr[index + 1], arr[index]] = [arr[index], arr[index + 1]];
+    return arr;
+  });
+};
 
 
   return (
@@ -221,6 +263,7 @@ const { totalMovies, avgRating, topGenre } = useMemo(() => {
             <>
               <button onClick={() => setIsRenaming(true)}>Rename Group</button>
               <button onClick={handleDeleteGroup}>Delete Group</button>
+              <button onClick={() => setIsCustomizing(true)}>Customize Layout</button>
             </>
           ) : (
             <div className="rename-form">
@@ -234,58 +277,96 @@ const { totalMovies, avgRating, topGenre } = useMemo(() => {
             </div>
           )}
         </div>
-
-        {/* Pending */}
-        <div className="pending-members-section">
-          <h2>Pending Requests</h2>
-          {pending.length === 0 && <p>No pending requests.</p>}
-          {pending.map((member) => (
-            <div key={member.id} className="pending-member-row">
-              <span>{member.username}</span>
-              <button onClick={() => handleApprove(member.id)}>Approve</button>
-              <button onClick={() => handleReject(member.id)}>Reject</button>
-            </div>
-          ))}
-        </div>
       </>
     )}
 
-    {/* Members */}
-    <div className="members-section">
-      <h2>Members</h2>
-      {members.map((member) => (
-        <div key={member.id} className="member-row">
-          <span>
-            {member.username}
-            {member.is_owner && " 👑"}
-          </span>
-          {member.account_id === userId && !member.is_owner && (
-            <button onClick={handleLeave}>Leave Group</button>
-          )}
-          {isOwner && !member.is_owner && member.account_id !== userId && (
-            <button onClick={() => handleRemove(member.id)}>Remove</button>
-          )}
-        </div>
-      ))}
-    </div>
+{isCustomizing && isOwner && (
+  <div className="customize-layout">
+    <h2>Customize Layout</h2>
+    {layoutConfig.map((section, index) => (
+      <div key={section} className="layout-item">
+        <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+        <button onClick={() => moveUp(index)}>↑</button>
+        <button onClick={() => moveDown(index)}>↓</button>
+      </div>
+    ))}
+    <button
+      onClick={async () => {
+        try {
+          console.log("About to save layoutConfig:", layoutConfig);
+          await saveGroupLayout(groupId, layoutConfig);
+          setIsCustomizing(false);
+          alert("Layout saved!");
+        } catch (err) {
+          console.error(err);
+          alert("Failed to save");
+        }
+      }}
+    >
+      Done
+    </button>
+    <button onClick={handleCancelCustomize}>Cancel</button>
   </div>
+)}
 
-  {/* MOVIE INFO BAR (MIDDLE) */}
-  <div className="section-box">
-    <MovieInfoBar
-      totalMovies={totalMovies}
-      avgRating={avgRating}
-      topGenre={topGenre}
-    />
-  </div>
+{layoutConfig.map((section) => {
+  if (section === "pending" && isOwner) {
+    return (
+      <div key="pending" className="pending-members-section">
+        <h2>Pending Requests</h2>
+        {pending.length === 0 && <p>No pending requests.</p>}
+        {pending.map((member) => (
+          <div key={member.id} className="pending-member-row">
+            <span>{member.username}</span>
+            <button onClick={() => handleApprove(member.id)}>Approve</button>
+            <button onClick={() => handleReject(member.id)}>Reject</button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (section === "members") {
+    return (
+      <div key="members" className="members-section">
+        <h2>Members</h2>
+        {members.map((member) => (
+          <div key={member.id} className="member-row">
+            <span>
+              {member.username}
+              {member.is_owner && " 👑"}
+            </span>
+            {member.account_id === userId && !member.is_owner && (
+              <button onClick={handleLeave}>Leave Group</button>
+            )}
+            {isOwner && !member.is_owner && member.account_id !== userId && (
+              <button onClick={() => handleRemove(member.id)}>Remove</button>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (section === "stats") {
+    return (
+      <MovieInfoBar
+        key="stats"
+        totalMovies={totalMovies}
+        avgRating={avgRating}
+        topGenre={topGenre}
+      />
+);
+}
+
+  return null;
+})}
 
   {/* CAROUSEL (BOTTOM) */}
   <div className="section-box carousel-box">
   <Carousel title="Group Movies" movies={movies} />
 </div>
-
-
 </div>
-
+</div>
   );
 }
