@@ -1,6 +1,5 @@
-
 import { Router } from "express";
-import jwt from "jsonwebtoken";
+import { auth } from "../helper/auth.js"; 
 
 import {
   getMyProfile,
@@ -9,35 +8,11 @@ import {
   updatePassword,
 } from "../controllers/profile_controller.js";
 
-const router = Router();
+const ProfileRouter = Router();
 
-function auth(req, res, next) {
-  const authHeader = req.headers.authorization || "";
+ProfileRouter.get("/", auth, getMyProfile);
+ProfileRouter.put("/email", auth, updateEmail);
+ProfileRouter.put("/username", auth, updateUsername);
+ProfileRouter.put("/password", auth, updatePassword);
 
-  if (!authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Missing or invalid Authorization header" });
-  }
-
-  const token = authHeader.substring(7);
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = {
-      id: payload.id,
-      email: payload.email,
-    };
-
-    next();
-  } catch (err) {
-    console.error("JWT verify error:", err.message);
-    return res.status(401).json({ error: "Invalid or expired token" });
-  }
-}
-
-router.get("/", auth, getMyProfile);
-router.put("/email", auth, updateEmail);
-router.put("/username", auth, updateUsername);
-router.put("/password", auth, updatePassword);
-
-export default router;
+export default ProfileRouter;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles/profile.css";
 
 import {
@@ -6,6 +7,7 @@ import {
   changeEmail,
   changeUsername,
   changePassword,
+  deleteAccount,
 } from "../api/profile";
 
 export default function Profile() {
@@ -25,7 +27,9 @@ export default function Profile() {
   const [newPasswordInput, setNewPasswordInput] = useState("");
 
   // yhteinen j/E popup
-  const [message, setMessage] = useState(null); 
+  const [message, setMessage] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadProfile() {
@@ -47,14 +51,34 @@ export default function Profile() {
     setShowConfirm(false);
   };
 
-  const handleConfirmDelete = () => {
-    // Tee tilin poisto
+  async function handleConfirmDelete() {
     setShowConfirm(false);
-    setMessage({
-      type: "success",
-      text: "Account delete is not yet implemented in backend.",
-    });
-  };
+
+    try {
+      const res = await deleteAccount();
+
+      if (res.error) {
+        setMessage({ type: "error", text: res.error });
+        return;
+      }
+
+      localStorage.removeItem("token");
+
+      setMessage({
+        type: "success",
+        text: "Account deleted successfully.",
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 10000);
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: "Failed to delete account.",
+      });
+    }
+  }
 
   function openEmailPopup() {
     setEmailInput("");
@@ -74,7 +98,6 @@ export default function Profile() {
     setShowPasswordPopup(true);
   }
 
-
   async function submitUsername() {
     if (!usernameInput.trim()) {
       setMessage({ type: "error", text: "Please enter a new username." });
@@ -89,15 +112,16 @@ export default function Profile() {
     }
 
     try {
-      const res = await changeUsername(usernameInput.trim(), passwordForUsername);
+      const res = await changeUsername(
+        usernameInput.trim(),
+        passwordForUsername
+      );
 
       if (res.error) {
         setMessage({ type: "error", text: res.error });
         return;
       }
-      setProfile((prev) =>
-        prev ? { ...prev, username: res.username } : res
-      );
+      setProfile((prev) => (prev ? { ...prev, username: res.username } : res));
 
       setShowUsernamePopup(false);
       setMessage({
@@ -130,9 +154,7 @@ export default function Profile() {
         return;
       }
 
-      setProfile((prev) =>
-        prev ? { ...prev, email: res.email } : res
-      );
+      setProfile((prev) => (prev ? { ...prev, email: res.email } : res));
 
       setShowEmailPopup(false);
       setMessage({
@@ -197,7 +219,7 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* säpö */}
+        {/* email */}
         <div className="profile-field">
           <label className="profile-label">Email</label>
           <div className="profile-field-row">
@@ -217,7 +239,7 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* salasana */}
+        {/* password */}
         <div className="profile-field">
           <label className="profile-label">Password</label>
           <div className="profile-field-row">
@@ -253,9 +275,8 @@ export default function Profile() {
           <div className="profile-confirm-dialog">
             <h2 className="profile-confirm-title">Delete account?</h2>
             <p className="profile-confirm-text">
-              Are you sure you want to delete your account? It can be restored
-              within 30 days by logging in. After that it will be permanently
-              removed.
+              Are you sure you want to delete your account? After pressing 
+              Delete account, you cannot restore it.
             </p>
 
             <div className="profile-confirm-actions">
@@ -267,13 +288,13 @@ export default function Profile() {
                 Cancel
               </button>
 
-              <button
-                type="button"
-                className="profile-popup-delete-btn"
-                onClick={handleConfirmDelete}
-              >
-                Delete account
-              </button>
+                <button
+                  type="button"
+                  className="profile-popup-delete-btn"
+                  onClick={handleConfirmDelete}
+                >
+                  Delete account
+                </button>
             </div>
           </div>
         </div>

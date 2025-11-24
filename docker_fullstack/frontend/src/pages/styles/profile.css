@@ -22,8 +22,14 @@
   border-radius: 50%;
   border: 2px solid #555;
   margin: 0 auto 24px auto;
-  background: radial-gradient(circle at 30% 30%, #444, #111);
+
+  background-image: url("../../img/profile-user-icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;  
 }
+
+
 
 .profile-title {
   text-align: center;
