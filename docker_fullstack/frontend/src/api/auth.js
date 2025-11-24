@@ -1,7 +1,5 @@
 import api from "./client";
 
-
-
 export function createAccount(data) {
   return api.post("/login/signup", data);
 }
