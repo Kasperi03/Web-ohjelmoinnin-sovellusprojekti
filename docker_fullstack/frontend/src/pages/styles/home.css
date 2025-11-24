@@ -7,16 +7,12 @@ body {
 }
 
 .home-container {
+  transform: translateY(-90px);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  padding-top: 65px;
   min-height: 200vh;
-}
-
-.carousel-container :nth-child(2) {
-  margin-top: 1px;
 }
 
 body::-webkit-scrollbar {

@@ -1,6 +1,6 @@
 .favorites-container {
   text-align: center;
-  padding-top: 100px;
+  transform: translateY(-70px);
   min-height: 80vh;
   color: white; /* Keep text white for visibility */
   background-color: #1a1a1a; /* Dark background */
@@ -10,10 +10,6 @@
   margin-bottom: 1rem;
   font-size: 2rem;
   display: inline-block;
-}
-
-.favorites-container .carousel-container {
-  transform: translateY(-350px); /* Position the carousel nicely */
 }
 
 .no-favorites {
