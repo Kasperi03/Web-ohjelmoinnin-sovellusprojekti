@@ -10,6 +10,14 @@ import {
   deleteAccount,
 } from "../api/profile";
 
+function isValidEmail(email) {
+  return typeof email === "string" && email.includes("@");
+}
+
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
+
 export default function Profile() {
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -68,10 +76,6 @@ export default function Profile() {
         type: "success",
         text: "Account deleted successfully.",
       });
-
-      setTimeout(() => {
-        navigate("/");
-      }, 10000);
     } catch (err) {
       setMessage({
         type: "error",
@@ -146,6 +150,14 @@ export default function Profile() {
       return;
     }
 
+    if (!isValidEmail(emailInput.trim())) {
+      setMessage({
+        type: "error",
+        text: "Email must contain '@'.",
+      });
+      return;
+    }
+
     try {
       const res = await changeEmail(emailInput.trim(), passwordForEmail);
 
@@ -171,6 +183,15 @@ export default function Profile() {
       setMessage({
         type: "error",
         text: "Please fill in both password fields.",
+      });
+      return;
+    }
+
+    if (!isStrongPassword(newPasswordInput)) {
+      setMessage({
+        type: "error",
+        text:
+          "Password must be at least 8 characters long and include one uppercase letter and one number.",
       });
       return;
     }
@@ -275,7 +296,7 @@ export default function Profile() {
           <div className="profile-confirm-dialog">
             <h2 className="profile-confirm-title">Delete account?</h2>
             <p className="profile-confirm-text">
-              Are you sure you want to delete your account? After pressing 
+              Are you sure you want to delete your account? After pressing
               Delete account, you cannot restore it.
             </p>
 
@@ -288,13 +309,13 @@ export default function Profile() {
                 Cancel
               </button>
 
-                <button
-                  type="button"
-                  className="profile-popup-delete-btn"
-                  onClick={handleConfirmDelete}
-                >
-                  Delete account
-                </button>
+              <button
+                type="button"
+                className="profile-popup-delete-btn"
+                onClick={handleConfirmDelete}
+              >
+                Delete account
+              </button>
             </div>
           </div>
         </div>
@@ -431,7 +452,15 @@ export default function Profile() {
               <button
                 type="button"
                 className="profile-popup-save"
-                onClick={() => setMessage(null)}
+                onClick={() => {
+                  const wasDeleted =
+                    message.type === "success" &&
+                    message.text.toLowerCase().includes("deleted");
+                  setMessage(null);
+                  if (wasDeleted) {
+                    navigate("/");
+                  }
+                }}
               >
                 OK
               </button>

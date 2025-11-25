@@ -3,6 +3,14 @@ import { createAccount } from "../api/auth";
 import { useNavigate, Link } from "react-router-dom";
 import "./styles/createAccount.css";
 
+function isValidEmail(email) {
+  return typeof email === "string" && email.includes("@");
+}
+
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
+
 export default function CreateAccount() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -12,6 +20,23 @@ export default function CreateAccount() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      alert("Email must contain '@'.");
+      return;
+    }
+
+    if (!isStrongPassword(password)) {
+      alert(
+        "Password must be at least 8 characters long and include one uppercase letter and one number."
+      );
+      return;
+    }
 
     try {
       await createAccount({ username, email, password });
