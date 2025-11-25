@@ -5,6 +5,14 @@ import {
   deleteAccount,
 } from "../models/login_model.js";
 
+function isValidEmail(email) {
+  return typeof email === "string" && email.includes("@");
+}
+
+function isStrongPassword(password) {
+  return /^(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
+}
+
 export async function loginUser(req, res, next) {
   try {
     const { email, password } = req.body;
@@ -42,6 +50,19 @@ export async function createUser(req, res, next) {
       return res
         .status(400)
         .json({ error: "Username, email, and password are required" });
+    }
+
+    if (!isValidEmail(email)) {
+      return res
+        .status(400)
+        .json({ error: "Email must contain '@'." });
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        error:
+          "Password must be at least 8 characters long and include one uppercase letter and one number.",
+      });
     }
 
     const user = await createAccount(username, email, password);
