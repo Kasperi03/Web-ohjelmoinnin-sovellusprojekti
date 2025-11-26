@@ -10,6 +10,7 @@ import ProfileRouter from "./routers/profile_router.js";
 import FavoriteRouter from "./routers/favorite_router.js";
 import GroupMovieRouter from "./routers/group_movies_router.js";
 import customizeRouter from "./routers/customize_router.js";
+import MoviereviewsRouter from "./routers/movie_reviews_router.js";
 
 const app = express();
 const port = process.env.PORT;
@@ -36,6 +37,8 @@ app.use("/login", loginRouter);
 app.use("/profile", ProfileRouter);
 
 app.use("/api/favorites", FavoriteRouter);
+
+app.use("/api/movie-reviews", MoviereviewsRouter);
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
