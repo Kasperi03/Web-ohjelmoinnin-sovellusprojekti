@@ -1,6 +1,5 @@
 import pool from "../database.js";
 
-// Add a movie to a group
 export const addMovieToGroup = async (groupId, movieId) => {
   const result = await pool.query(
     `INSERT INTO group_movies (group_id, movie_id)
@@ -29,7 +28,7 @@ export const ensureMovieExists = async (apiId) => {
   return result.rows[0].movie_id;
 };
 
-// Remove a movie from a group
+
 export const deleteMovieFromGroup = async (groupId, movieId) => {
   const result = await pool.query(
     `DELETE FROM group_movies
@@ -40,7 +39,6 @@ export const deleteMovieFromGroup = async (groupId, movieId) => {
   return result.rows[0];
 };
 
-// Get all movies for a group
 export const getMoviesInGroup = async (groupId) => {
   const result = await pool.query(
     `SELECT m.api_id
@@ -50,6 +48,6 @@ export const getMoviesInGroup = async (groupId) => {
     [groupId]
   );
 
-  return result.rows;  // [{ api_id: 1419406 }]
+  return result.rows; 
 };
 
