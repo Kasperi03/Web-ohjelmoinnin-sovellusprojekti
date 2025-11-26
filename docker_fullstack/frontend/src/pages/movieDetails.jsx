@@ -4,6 +4,7 @@ import { fetchMovieDetails } from "../api/movieDetailHandler.js";
 import { addFavorite, deleteFavorite, getFavorites } from "../api/favorites.js";
 import { getCurrentUser } from "../api/currentUserHelper.js";
 import "./styles/movieDetails.css";
+import { submitMovieReview } from "../api/movieReviewHansler.js";
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -110,10 +111,20 @@ export default function MovieDetails() {
 
 
   const submitReview = () => {
-    alert(`Review submitted!\nRating: ${userRating}\nText: ${reviewText}`);
-    setUserRating(0);
-    setReviewText("");
-  };
+  submitMovieReview(id, userRating, reviewText)
+    .then((data) => {
+      console.log("Review submitted successfully:", data);
+
+      alert(`Review submitted!\nRating: ${userRating}\nText: ${reviewText}`);
+
+      setUserRating(0);
+      setReviewText("");
+    })
+    .catch((error) => {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review: " + error.message);
+    });
+};
 
   const openGroupDropdown = async () => {
     try {
