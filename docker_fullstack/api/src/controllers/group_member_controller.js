@@ -9,7 +9,8 @@ import {
   getMemberById,
   isMember,
   isOwner,
-  getMemberRow
+  getMemberRow,
+  getMemberCount
 } from "../models/group_member_model.js";
 
 import { getOne as getGroupById } from "../models/group_model.js";
@@ -173,5 +174,47 @@ export async function leaveGroup(req, res, next) {
     res.json({ message: "You left the group" });
   } catch (err) {
     next(err);
+  }
+}
+
+
+export async function getGroupMemberCount(req, res) {
+  try {
+    const groupId = req.params.groupId;
+
+    const count = await getMemberCount(groupId);
+
+    return res.status(200).json({ count });
+  } catch (error) {
+    console.error("Error getting member count:", error);
+    return res.status(500).json({ error: "Failed to get member count" });
+  }
+}
+
+
+
+export async function checkIfMember(req, res) {
+  try {
+    const groupId = req.params.groupId;
+    const userId = req.user.account_id;
+
+    // This gives you: id, group_id, account_id, status
+    const membership = await getMemberRow(groupId, userId);
+
+    if (!membership) {
+      return res.json({
+        status: null,
+        isMember: false
+      });
+    }
+
+    return res.json({
+      status: membership.status,                 // "accepted", "pending", "rejected"
+      isMember: membership.status === "accepted"
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to check membership" });
   }
 }

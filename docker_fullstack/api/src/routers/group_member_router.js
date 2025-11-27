@@ -1,14 +1,16 @@
 // group_member_router.js
 import { Router } from "express";
 import { auth } from "../helper/auth.js";
-import {joinGroup,approveMemberRequest,rejectMemberRequest,removeGroupMember,getGroupMembers,getPendingRequests,leaveGroup} from "../controllers/group_member_controller.js";
+import {joinGroup,approveMemberRequest,rejectMemberRequest,removeGroupMember,getGroupMembers,getPendingRequests,leaveGroup,getGroupMemberCount,checkIfMember} from "../controllers/group_member_controller.js";
 import { checkGroupMember } from "../helper/checkGroupMember.js";
 import { checkGroupOwner } from "../helper/checkGroupOwner.js";
 
 const GroupMemberRouter = Router();
 
 // User requests to join a group
+GroupMemberRouter.get("/:groupId/member-count", getGroupMemberCount);
 GroupMemberRouter.post("/:groupId/join",auth, joinGroup);
+GroupMemberRouter.get("/:groupId/is-member", auth, checkIfMember);
 
 // Member list
 GroupMemberRouter.get("/:groupId/members",auth,checkGroupMember, getGroupMembers);

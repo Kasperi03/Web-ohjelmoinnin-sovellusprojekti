@@ -9,8 +9,9 @@ import {
 
 const GroupMovieRouter = Router();
 
-GroupMovieRouter.get("/:groupId/movies",auth, getMovies);
-GroupMovieRouter.post("/add",auth, addMovie);
-GroupMovieRouter.delete("/remove",auth, removeMovie);
+GroupMovieRouter.get("/:groupId/movies", auth, getMovies);
+GroupMovieRouter.post("/:groupId/:apiId", auth, addMovie);
+GroupMovieRouter.delete("/:groupId/:movieId", auth, removeMovie);
+
 
 export default GroupMovieRouter;

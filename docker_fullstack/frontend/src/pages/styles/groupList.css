@@ -3,12 +3,14 @@
   padding-top: 50px;
 }
 
-.create-btn {
+.group-btn {
   margin-top: 20px;
+  margin: 30px;
   width: 200px;
   height: 40px;
-  color: white;
-  background-color: #434343;
+  color: rgb(76, 199, 64);
+  background-color: #434343 !important;
+  background-image: none !important;
   border-radius: 15px;
   justify-content: center;
 
@@ -17,13 +19,13 @@
   margin-top: -50px;
 }
 
-.create-btn:hover {
+.group-btn:hover {
   background-color: #808080;
   cursor: pointer;
   transform: scale(1.1);
   transition: transform 0.4s ease;
 }
-.create-btn:not(:hover) {
+.group-btn:not(:hover) {
   transform: scale(1) ease 0.4s;
   transition: transform 0.4s ease;
 }

@@ -124,3 +124,15 @@ export async function getMemberRow(groupId, accountId) {
   return result.rows[0];
 }
 
+export async function getMemberCount(groupId) {
+  const result = await pool.query(
+    `SELECT COUNT(*) AS count
+       FROM group_members
+      WHERE group_id = $1`,
+    [groupId]
+  );
+
+  return Number(result.rows[0].count);
+}
+
+

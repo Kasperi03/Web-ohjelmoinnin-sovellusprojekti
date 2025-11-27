@@ -41,13 +41,15 @@ export const deleteMovieFromGroup = async (groupId, movieId) => {
 
 export const getMoviesInGroup = async (groupId) => {
   const result = await pool.query(
-    `SELECT m.api_id
+    `SELECT 
+        m.movie_id AS id,      -- INTERNAL DB ID
+        m.api_id               -- TMDB ID
      FROM group_movies gm
      JOIN movies m ON gm.movie_id = m.movie_id
      WHERE gm.group_id = $1`,
     [groupId]
   );
 
-  return result.rows; 
+  return result.rows;
 };
 

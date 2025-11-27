@@ -63,7 +63,7 @@
 }
 
 .fav-btn,
-.group-btn {
+.add-group-btn {
   padding: 8px 12px;
   border: none;
   border-radius: 6px;
@@ -75,7 +75,7 @@
 }
 
 .fav-btn:hover,
-.group-btn:hover {
+.add-group-btn:hover {
   transform: scale(1.05);
   opacity: 0.9;
 }
