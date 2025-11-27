@@ -1,4 +1,4 @@
-import { getAll, getOne, addOne, updateOne, deleteOne, findGroupsForUser } from "../models/group_model.js";
+import { getAll, getOne, addOne, updateOne, deleteOne, findGroupsForUser,getMyGroupsFull } from "../models/group_model.js";
 
 export async function getGroups(req, res, next) {
   try {
@@ -82,4 +82,13 @@ export const getGroupsForUser = async (req, res) => {
   }
 };
 
-
+export async function getMyGroupsFullController(req, res) {
+  try {
+    const accountId = req.user.account_id;
+    const groups = await getMyGroupsFull(accountId);
+    return res.json(groups);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to fetch groups" });
+  }
+}

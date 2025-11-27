@@ -44,13 +44,15 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
               transition: "transform 0.5s ease",
             }}
           >
-            {movies.map((movie) => (
+            {movies.map((movie,index) => (
               <div
-                key={movie.id}
+                key={`${movie.id}-${index}`}
                 className="carousel-slide"
                 onClick={() => navigate(`/movie/${movie.id}`)} // <-- clickable
                 style={{ cursor: "pointer" }}
+                
               >
+                {movie.renderExtra}
                 {movie.poster_path ? (
                   <img src={`${imgUrl}${movie.poster_path}`} alt={movie.title} />
                 ) : (

@@ -50,6 +50,43 @@
   display: block;          /* stops flex expansion */
 }
 
-.section-box {
-  border: 3px solid red !important;
+
+/* The slide container must be relative for absolute overlay */
+.group-carousel-wrapper .carousel-slide {
+  position: relative;
 }
+
+/* The remove button */
+.group-carousel-wrapper .remove-movie-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 30;
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(255, 40, 40, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show on hover */
+.group-carousel-wrapper .carousel-slide:hover .remove-movie-btn {
+  opacity: 1;
+}
+
+

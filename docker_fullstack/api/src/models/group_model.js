@@ -1,5 +1,6 @@
 import pool from "../database.js";
 
+
 export const getAll = async () => {
   const result = await pool.query("SELECT * FROM groups");
   return result.rows;
@@ -68,3 +69,23 @@ export const findGroupsForUser = async (accountId) => {
   return result.rows;
 };
 
+export async function getMyGroupsFull(accountId) {
+  const result = await pool.query( `
+    SELECT
+      g.group_id,
+      g.name,
+      g.owner_id,
+      gm.status,
+      (
+        SELECT COUNT(*)
+        FROM group_members gm2
+        WHERE gm2.group_id = g.group_id
+      ) AS "memberCount"
+    FROM groups g
+    JOIN group_members gm
+      ON g.group_id = gm.group_id
+    WHERE gm.account_id = $1`,
+  [accountId]
+);
+  return result.rows;
+}

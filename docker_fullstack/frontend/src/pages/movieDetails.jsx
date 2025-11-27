@@ -9,6 +9,9 @@ import {
   fetchMovieReviews,
   deleteMovieReview,
 } from "../api/movieReviewHansler.js";
+import { useAcceptedGroups } from "../api/useAcceptedGroups.js";
+import { addMovieToGroup,} from "../api/groupMovieHandler.js";
+
 
 export default function MovieDetails() {
   const { id } = useParams();
@@ -16,12 +19,12 @@ export default function MovieDetails() {
   const [userRating, setUserRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
-  const [groups, setGroups] = useState([]);
+  const { acceptedGroups, fetchAcceptedGroups } = useAcceptedGroups();
   const [showDropdown, setShowDropdown] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const user = getCurrentUser(); 
+  const user = getCurrentUser();
   const userId = user?.account_id;
 
   useEffect(() => {
@@ -82,49 +85,23 @@ export default function MovieDetails() {
 
   const handleAddToGroup = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch("http://localhost:3001/groups/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json(); 
-      console.log("Fetched groups:", data); 
-
-      setGroups(data);
+      await fetchAcceptedGroups();
       setShowDropdown(true);
     } catch (err) {
       console.error("Failed to load groups:", err);
     }
   };
-  ;
 
-  const addToGroup = async (groupId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:3001/group-movies/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          movieId: Number(id), 
-          groupId: Number(groupId), 
-        }),
-      });
 
-      if (!res.ok) throw new Error("Failed");
-
-      alert("Movie added to group!");
-      setShowDropdown(false);
-    } catch (err) {
-      console.error(err);
-      alert("Error adding to group");
-    }
-  };
+const addToGroup = async (groupId) => {
+  try {
+    await addMovieToGroup(groupId, id);
+    alert("Movie added to group!");
+    setShowDropdown(false);
+  } catch (err) {
+    alert("Error adding to group");
+  }
+};
 
   const submitReview = () => {
     submitMovieReview(id, userRating, reviewText)
@@ -171,17 +148,6 @@ export default function MovieDetails() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const openGroupDropdown = async () => {
-    try {
-      const res = await fetch("http://localhost:3001/groups");
-      const data = await res.json();
-      setGroups(data);
-      setShowDropdown(true);
-    } catch (err) {
-      console.error("Failed to load groups:", err);
-    }
-  };
-
   const myReview = reviews.find((r) => r.account_id === userId);
 
   return (
@@ -210,14 +176,14 @@ export default function MovieDetails() {
       <div className="details-bottom">
         <h1>{movie.title}</h1>
 
-      {/* Movie Rating */}
+        {/* Movie Rating */}
         {movie.vote_average && (
-         <div className="movie-rating">
-         ⭐ {movie.vote_average.toFixed(1)} / 10
-        </div>
+          <div className="movie-rating">
+            ⭐ {movie.vote_average.toFixed(1)} / 10
+          </div>
         )}
 
-          <p className="details-overview">{movie.overview}</p>
+        <p className="details-overview">{movie.overview}</p>
 
 
         {/* Action buttons (only when logged in) */}
@@ -227,13 +193,13 @@ export default function MovieDetails() {
               {isFavorite ? "💔 Unfavorite" : "❤️ Favorite"}
             </button>
 
-            <button className="group-btn" onClick={handleAddToGroup}>
+            <button className="add-group-btn" onClick={handleAddToGroup}>
               ➕ Add to Group
             </button>
 
             {showDropdown && (
               <select
-                className="group-dropdown"
+                className="add-group-dropdown"
                 defaultValue=""
                 onChange={(e) => addToGroup(e.target.value)}
               >
@@ -241,13 +207,14 @@ export default function MovieDetails() {
                   Select a group
                 </option>
 
-                {groups.map((g) => (
+                {acceptedGroups.map((g) => (
                   <option key={g.group_id} value={g.group_id}>
                     {g.name}
                   </option>
                 ))}
               </select>
             )}
+
           </div>
         )}
 

@@ -3,25 +3,60 @@ import GroupListing from "../components/groupListing.jsx";
 import CreateGroup from "../components/createGroup.jsx";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { joinGroup } from "../api/groupMemberHandler.js";
+import { getCurrentUser } from "../api/currentUserHelper.js";
 
 export default function GroupList() {
   const [groups, setGroups] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
+  const user = getCurrentUser();
+  const isLoggedIn = !!user;
+
 
   // Load groups from backend
-  useEffect(() => {
-    async function fetchGroups() {
-      try {
-        const res = await fetch("http://localhost:3001/groups");
-        const data = await res.json();
-        setGroups(data);
-      } catch (err) {
-        console.error("Failed to load groups:", err);
-      }
+useEffect(() => {
+  async function fetchGroups() {
+    try {
+      // 1. Fetch basic group info
+      const res = await fetch("http://localhost:3001/groups");
+      const groupsData = await res.json();
+
+      // 2. Fetch member counts for each group
+      const groupsWithCounts = await Promise.all(
+        groupsData.map(async (group) => {
+          try {
+            const countRes = await fetch(
+              `http://localhost:3001/groups/${group.group_id}/member-count`
+            );
+            const countData = await countRes.json();
+
+            return {
+              ...group,
+              memberCount: countData.count,
+            };
+          } catch (err) {
+            console.error(
+              `Failed to fetch member count for group ${group.group_id}`,
+              err
+            );
+            return {
+              ...group,
+              memberCount: 0, // fallback so UI doesn't break
+            };
+          }
+        })
+      );
+
+      // 3. Save the final result into state
+      setGroups(groupsWithCounts);
+
+    } catch (err) {
+      console.error("Failed to load groups:", err);
     }
-    fetchGroups();
-  }, []);
+  }
+
+  fetchGroups();
+}, []);
+
 
   const handleCreateGroup = async (groupName) => {
     try {
@@ -45,19 +80,24 @@ export default function GroupList() {
       <h1>Groups Page</h1>
       <p>This is where you can view groups.</p>
 
-      <button>
-        <Link to="/groups">Group</Link>
-      </button>
-      <button className="create-btn" onClick={() => setIsCreating(true)}>
-        Create New Group
-      </button>
+      {isLoggedIn && (
+  <>
+    <button className="group-btn">
+      <Link to="/my-groups">My Groups</Link>
+    </button>
+
+    <button className="group-btn" onClick={() => setIsCreating(true)}>
+      Create New Group
+    </button>
+  </>
+)}
 
       {groups.map((group) => (
         <GroupListing
           key={group.group_id}
           groupId={group.group_id}
           name={group.name}
-          memberCount={0} // You will update this later
+          memberCount={group.memberCount}
         />
       ))}
 
