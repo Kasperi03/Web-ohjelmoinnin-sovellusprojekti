@@ -40,6 +40,10 @@ app.use("/api/favorites", FavoriteRouter);
 
 app.use("/api/movie-reviews", MoviereviewsRouter);
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
+  });
+}
+
+export default app;
