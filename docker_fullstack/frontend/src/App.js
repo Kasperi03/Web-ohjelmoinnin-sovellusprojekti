@@ -15,6 +15,7 @@ import { GenreProvider } from "./context/genreContext.jsx";
 import "./pages/styles/darkTheme.css";
 import MovieDetails from "./pages/movieDetails.jsx";
 import MyGroups from "./pages/myGroups.jsx";
+import ShareFavorite from "./pages/shareFavorite.jsx";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/search" element={<SearchResults />} />
           <Route path="/movie/:id" element={<MovieDetails />} />
           <Route path="/my-groups" element={<MyGroups />} />
+          <Route path="/shareFavorite/:id" element={<ShareFavorite />} />
 
         </Routes>
       </HashRouter>

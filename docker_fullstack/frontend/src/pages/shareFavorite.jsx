@@ -1,39 +1,41 @@
 import { useEffect, useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import "./styles/favorites.css";
 import Carousel from "../components/carousel.jsx";
 import MovieInfoBar from "../components/movieInfoBar.jsx";
-import { getFavorites } from "../api/favorites.js";
 import { fetchMovieDetails } from "../api/movieDetailHandler.js";
-import { getMyProfile } from "../api/profile.js";
+import { getUserByIdPublic } from "../api/profile";
+import { getFavoritesByUserId } from "../api/favorites.js";
 
-export default function Favorites() {
+export default function ShareFavorite() {
+  const { id } = useParams();
   const [favoriteMovies, setFavoriteMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadUser() {
+    async function fetchUser() {
       try {
-        const profile = await getMyProfile();
-        setUser(profile);
+        const userData = await getUserByIdPublic(id);
+        setUser(userData);
       } catch (err) {
-        console.error("Could not load user profile", err);
+        console.error("Failed to load user", err);
       }
     }
-    loadUser();
-  }, []);
+    fetchUser();
+  }, [id]);
 
   useEffect(() => {
-    async function fetchFavoritesData() {
+    async function fetchFavorites() {
       try {
-        setLoading(true);
-
-        const data = await getFavorites();
+        const data = await getFavoritesByUserId(id);
         const movieIds = data.favorites || [];
 
-        const detailedMovies = await Promise.all(movieIds.map(async (id) => fetchMovieDetails(id)));
+        const movies = await Promise.all(
+          movieIds.map((movieId) => fetchMovieDetails(movieId))
+        );
 
-        setFavoriteMovies(detailedMovies);
+        setFavoriteMovies(movies);
       } catch (err) {
         console.error("Failed to load favorites", err);
       } finally {
@@ -41,8 +43,8 @@ export default function Favorites() {
       }
     }
 
-    fetchFavoritesData();
-  }, []);
+    fetchFavorites();
+  }, [id]);
 
   const { totalMovies, avgRating, topGenre } = useMemo(() => {
     if (!favoriteMovies.length) {
@@ -50,6 +52,7 @@ export default function Favorites() {
     }
 
     const totalMovies = favoriteMovies.length;
+
     const avgRating =
       favoriteMovies.reduce(
         (sum, m) => sum + (typeof m.vote_average === "number" ? m.vote_average : 0),
@@ -68,58 +71,45 @@ export default function Favorites() {
     }
 
     if (genreCount.size) {
-      const [bestGenre] = [...genreCount.entries()].sort((a, b) => b[1] - a[1])[0];
-      topGenre = bestGenre;
+      const [best] = [...genreCount.entries()].sort((a, b) => b[1] - a[1])[0];
+      topGenre = best;
     }
 
-    return {
-      totalMovies,
-      avgRating,
-      topGenre,
-    };
+    return { totalMovies, avgRating, topGenre };
   }, [favoriteMovies]);
 
-  function handleShare() {
-    if (!user || !user.account_id) {
-      alert("User information not loaded yet.");
-      return;
-    }
-
-    const shareUrl = `${window.location.origin}/#/shareFavorite/${user.account_id}`;
-
-    navigator.clipboard
-      .writeText(shareUrl)
-      .then(() => alert("Share link copied:\n" + shareUrl))
-      .catch(() => alert("Could not copy link"));
-  }
-
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="favorites-container">
-        <h1>Your Personal Collection</h1>
-        <p>Loading your favorites...</p>
+        <h1>Loading...</h1>
+        <p>Please wait</p>
       </div>
     );
   }
 
   return (
     <div className="favorites-container">
-      <MovieInfoBar totalMovies={totalMovies} avgRating={avgRating} topGenre={topGenre} />
 
-      <button className="favorite-share-button" onClick={handleShare}>
-        Share My Favorites
-      </button>
+      <MovieInfoBar 
+        totalMovies={totalMovies}
+        avgRating={avgRating}
+        topGenre={topGenre}
+        username={user.username} 
+      />
 
       <div className="carousel-container">
         {favoriteMovies.length > 0 ? (
-          <Carousel title="My Favorites" movies={favoriteMovies} visibleSlides={4} />
+          <Carousel
+            title={`${user.username}'s Favorite Movies`}
+            movies={favoriteMovies}
+            visibleSlides={4}
+          />
         ) : (
           <div className="no-favorites">
-            <p>You haven't added any favorites yet.</p>
+            <p>{user.username} has no favorite movies yet.</p>
           </div>
         )}
       </div>
     </div>
   );
 }
-

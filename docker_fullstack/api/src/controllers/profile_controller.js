@@ -100,3 +100,13 @@ export async function updatePassword(req, res, next) {
     next(err);
   }
 }
+
+export async function getUserPublicById(req, res, next) {
+  try {
+    const userId = req.params.userId;
+    const user = await getUserById(userId);
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
+}

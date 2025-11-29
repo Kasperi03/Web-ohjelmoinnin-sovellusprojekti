@@ -73,3 +73,13 @@ export async function deleteFavorite(tmdbId) {
     throw err;
   }
 }
+
+export async function getFavoritesByUserId(userId) {
+  const response = await fetch(`${API_URL}/public/${userId}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch public user profile");
+  }
+
+  return await response.json();
+}
