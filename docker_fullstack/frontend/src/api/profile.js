@@ -45,3 +45,11 @@ export function deleteAccount() {
     headers: headers(),
   }).then((r) => r.json());
 }
+
+export function getUserByIdPublic(userId) {
+  return fetch(`${BASE_URL}/profile/public/${userId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((r) => r.json());
+}

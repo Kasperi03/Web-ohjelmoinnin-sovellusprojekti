@@ -69,3 +69,15 @@ export async function removeFavorite(req, res, next) {
     next(err);
   }
 }
+
+export async function getFavoritesPublic(req, res, next) {
+  try {
+    const userId = req.params.userId;
+
+    const favorites = await getFavoritesByUser(userId);
+
+    res.json({ favorites });
+  } catch (err) {
+    next(err);
+  }
+}
