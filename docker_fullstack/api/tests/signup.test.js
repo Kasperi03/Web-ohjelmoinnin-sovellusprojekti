@@ -1,94 +1,75 @@
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 import request from "supertest";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const envPath = path.resolve(process.cwd(), "../.env");
-dotenv.config({ path: envPath });
+// 1️⃣ Load test environment variables first
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env.test")
+});
 
-if (process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = process.env.DATABASE_URL.replace("@db", "@localhost");
-}
-
+// 2️⃣ Dynamic import AFTER dotenv
 const app = (await import("../src/index.js")).default;
+const pool = (await import("../src/database.js")).default;
 
-// create random email that can be used for creating new account
+// Helper to create unique email
 function randomEmail() {
-  return `testemail+${Math.floor(Math.random() * 100000)}@gmail.com`;
+  return `test+${Math.floor(Math.random() * 999999)}@gmail.com`;
 }
 
-
-
-
+function randomUsername() {
+  return `user_${Math.floor(Math.random() * 999999)}`;
+}
 
 describe("User Registration Feature", () => {
-  const strongPassword = "Password1"; 
+  const strongPassword = "Password1";
 
-  
-  describe(" Tests to test invalid credentials", () => {
-    
-    it("should reject registration when fields are empty", async () => {
+  describe("Invalid credentials", () => {
+
+    test("Reject empty fields", async () => {
       const res = await request(app)
         .post("/login/signup")
-        .send({
-          username: "",
-          email: "",
-          password: ""
-        });
+        .send({ username: "", email: "", password: "" });
 
-      
-      expect(res.status).toBe(400); 
-    });
-
-    it("should reject registration when email format is invalid", async () => {
-      const res = await request(app)
-        .post("/login/signup")
-        .send({
-          username: "testuser",
-          email: "testemail", 
-          password: strongPassword
-        });
-
-      
       expect(res.status).toBe(400);
     });
 
-    it("should reject registration when password is too weak", async () => {
+    test("Reject invalid email format", async () => {
       const res = await request(app)
         .post("/login/signup")
-        .send({
-          username: "testuser",
-          email: randomEmail(),
-          password: "weak" 
-        });
+        .send({ username: randomUsername(), email: "bademail", password: strongPassword });
 
-      
+      expect(res.status).toBe(400);
+    });
+
+    test("Reject weak password", async () => {
+      const res = await request(app)
+        .post("/login/signup")
+        .send({ username: randomUsername(), email: randomEmail(), password: "weak" });
+
       expect(res.status).toBe(400);
     });
   });
 
-
-  describe(" POSITIVE TESTS (Inputs that should succeed)", () => {
-
-    it("should successfully register a user with valid credentials", async () => {
-      const validEmail = randomEmail(); // save the newest randomEmail so can be used in login test
-      
+  describe("Valid registration", () => {
+    test("Successfully registers user", async () => {
+      const validEmail = randomEmail();
 
       const res = await request(app)
         .post("/login/signup")
         .send({
-          username: "testuser",
+          username: "newuser",
           email: validEmail,
           password: strongPassword
         });
 
-      
-      if (res.status !== 201) console.error("Error:", res.text);
-      
+      if (res.status !== 201) console.error("Signup Error:", res.text);
+
       expect(res.status).toBe(201);
       expect(res.body).toHaveProperty("email", validEmail);
-      
     });
   });
-
 });
