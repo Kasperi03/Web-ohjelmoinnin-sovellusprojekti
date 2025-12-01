@@ -93,7 +93,8 @@
 
 .star {
   cursor: pointer;
-  color: #777;
+  color: #ffd700;
+  gap: 2px;
   transition: color 0.2s ease;
 }
 
