@@ -22,8 +22,10 @@ CREATE TABLE account (
 -- ==========================================
 CREATE TABLE groups (
     group_id SERIAL PRIMARY KEY,
-    owner_id INT NOT NULL 
-    REFERENCES account(account_id) ON DELETE CASCADE,
+
+    owner_id INT 
+        REFERENCES account(account_id) ON DELETE SET NULL,
+
     name VARCHAR(255) NOT NULL,
     layout JSONB DEFAULT '["pending","members","stats"]'::jsonb
 );
