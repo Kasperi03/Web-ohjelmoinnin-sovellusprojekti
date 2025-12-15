@@ -6,7 +6,11 @@
   --placeholder-color: #a7a49c;
   --card-bg: #1e1f21; 
 }
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 html,
 body {
   background-color: var(--background);
@@ -15,7 +19,7 @@ body {
   margin: 0;
   padding: 0;
   padding-top: 80px;
-  min-height: 100vh;
+  height: 100%;
   background-image: repeating-linear-gradient(
       to right,
       rgba(255, 0, 0, 0.03) 0px,

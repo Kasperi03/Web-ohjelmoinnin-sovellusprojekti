@@ -95,3 +95,18 @@
   line-height: 1.3;
 }
 
+* {
+  scrollbar-width: auto;
+}
+
+*::-webkit-scrollbar {
+  width: auto;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: initial;
+}
+
+*::-webkit-scrollbar-track {
+  background: initial;
+}
