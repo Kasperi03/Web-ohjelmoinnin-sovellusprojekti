@@ -44,13 +44,78 @@ export function createToken(user) {
 }
 
 export async function deleteAccount(accountId) {
-  const result = await pool.query(
-    "DELETE FROM account WHERE account_id = $1 RETURNING account_id",
-    [accountId]
-  );
+  // Start a database transaction
+  await pool.query("BEGIN");
 
-  return result.rowCount > 0;
+  try {
+    // STEP 1 — Find groups owned by this account
+    const ownerGroups = await pool.query(
+      `SELECT group_id
+       FROM groups
+       WHERE owner_id = $1`,
+      [accountId]
+    );
+
+    for (const row of ownerGroups.rows) {
+      const groupId = row.group_id;
+
+      // STEP 2 — Get all accepted members of this group
+      const members = await pool.query(
+        `SELECT account_id
+         FROM group_members
+         WHERE group_id = $1
+           AND status = 'accepted'
+         ORDER BY id ASC`,
+        [groupId]
+      );
+
+      // If this user is the only member → DELETE the whole group
+      if (members.rows.length <= 1) {
+        await pool.query(
+          `DELETE FROM groups WHERE group_id = $1`,
+          [groupId]
+        );
+        continue;
+      }
+
+      // STEP 3 — Transfer ownership to the next accepted member
+      const newOwner = members.rows.find(
+        m => m.account_id !== accountId
+      );
+
+      if (newOwner) {
+        await pool.query(
+          `UPDATE groups
+           SET owner_id = $1
+           WHERE group_id = $2`,
+          [newOwner.account_id, groupId]
+        );
+      } else {
+        // Safety: should never occur, but delete as fallback
+        await pool.query(
+          `DELETE FROM groups WHERE group_id = $1`,
+          [groupId]
+        );
+      }
+    }
+
+    // STEP 4 — Delete the account (cascades: reviews, favorites, members, etc.)
+    const result = await pool.query(
+      `DELETE FROM account
+       WHERE account_id = $1
+       RETURNING account_id`,
+      [accountId]
+    );
+
+    await pool.query("COMMIT");
+
+    return result.rowCount > 0; // Same return signature as your original
+  } catch (err) {
+    await pool.query("ROLLBACK");
+    throw err;
+  }
 }
+
 
 export async function getUserById(id) {
   const result = await pool.query(
