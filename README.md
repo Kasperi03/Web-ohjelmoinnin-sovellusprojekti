@@ -23,6 +23,7 @@ Features:
 Frontend: React, JavaScript, css.
 
 Backend: JavaScript, PostgreSQL, Express.js
+
 API: TMDB API.
 
 
