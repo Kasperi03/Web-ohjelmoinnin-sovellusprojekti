@@ -5,7 +5,7 @@
 
 Movie database web application inspired by TMDB, built with React and JavaScript, and fully containerized using Docker.
 
-Features:
+**Features:**
 - Registeration, login / logout and deleting account
 - Browse movies via carousel. Movies are in two categories which are "now in theaters" and "trending".
 - Search functionality with 3 categories: Movie title, actor and genre.
@@ -19,25 +19,45 @@ Features:
 
 
 
-Frontend: React, JavaScript, css.
-Backend: JavaScript, PostgreSQL.
-API: TMDB API,
 
 
-Requirements
+
+
+
+
+**Frontend:** React, JavaScript, css.
+**Backend:** JavaScript, PostgreSQL.
+**API:** TMDB API,
+
+
+
+
+**Requirements**
+
 
 -Docker
 
-Installation. 
 
-Clone the repository.
+
+
+
+**Installation:**
+
+
+**Clone the repository.**
 
 git clone https://github.com/Kasperi03/Web-ohjelmoinnin-sovellusprojekti
 
 cd docker_fullstack
 
-Run with docker
+
+
+**Run with docker:**
+
 docker-compose up --build
 
-Open with 
+
+
+**Open with:**
+
 http://localhost:3000
