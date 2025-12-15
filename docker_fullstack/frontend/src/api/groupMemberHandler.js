@@ -1,6 +1,5 @@
 const BASE_URL = "http://localhost:3001";
 
-// Join group
 export async function joinGroup(groupId) {
   const token = localStorage.getItem("token");
 
@@ -16,7 +15,6 @@ export async function joinGroup(groupId) {
   return res.json();
 }
 
-// Leave group (correct backend route)
 export async function removeMember(groupId, memberId) {
   const token = localStorage.getItem("token");
 
@@ -31,7 +29,6 @@ export async function removeMember(groupId, memberId) {
   return res.json();
 }
 
-// Approve member
 export async function approveMember(groupId, memberId) {
   const token = localStorage.getItem("token");
 
@@ -46,7 +43,6 @@ export async function approveMember(groupId, memberId) {
   return res.json();
 }
 
-// Reject member
 export async function rejectMember(groupId, memberId) {
   const token = localStorage.getItem("token");
 
@@ -61,7 +57,6 @@ export async function rejectMember(groupId, memberId) {
   return res.json();
 }
 
-// Get pending requests
 export async function getPendingMembers(groupId) {
   const token = localStorage.getItem("token");
 
@@ -86,7 +81,7 @@ export async function getGroupMembers(groupId) {
   });
 
     if (!res.ok) {
-    const text = await res.text();   // read the actual error message
+    const text = await res.text();
     throw new Error(text || `HTTP ${res.status}`);
     } 
   return res.json();

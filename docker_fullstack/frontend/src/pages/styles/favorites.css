@@ -2,8 +2,8 @@
   text-align: center;
   transform: translateY(-70px);
   min-height: 80vh;
-  color: white; /* Keep text white for visibility */
-  background-color: #1a1a1a; /* Dark background */
+  color: white;
+  background-color: #1a1a1a; 
 }
 
 .favorites-container h1 {

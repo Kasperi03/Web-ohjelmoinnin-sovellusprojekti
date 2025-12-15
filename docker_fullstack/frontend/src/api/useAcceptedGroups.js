@@ -13,7 +13,6 @@ export function useAcceptedGroups() {
 
       const data = await res.json();
 
-      // simple + correct filter
       console.log("Groups returned from API:", data);
 
       const accepted = data.filter((g) => g.status === "accepted");

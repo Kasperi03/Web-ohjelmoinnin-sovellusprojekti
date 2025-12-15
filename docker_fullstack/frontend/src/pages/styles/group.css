@@ -44,19 +44,17 @@
 }
 
 .section-box.carousel-box {
-  padding: 10px 15px;      /* smaller padding */
-  height: auto;            /* prevents stretching */
-  min-height: auto;        /* prevents flex from forcing size */
-  display: block;          /* stops flex expansion */
+  padding: 10px 15px;
+  height: auto;
+  min-height: auto;
+  display: block;
 }
 
 
-/* The slide container must be relative for absolute overlay */
 .group-carousel-wrapper .carousel-slide {
   position: relative;
 }
 
-/* The remove button */
 .group-carousel-wrapper .remove-movie-btn {
   position: absolute;
   top: 8px;
@@ -84,7 +82,6 @@
   transition: opacity 0.2s ease;
 }
 
-/* Show on hover */
 .group-carousel-wrapper .carousel-slide:hover .remove-movie-btn {
   opacity: 1;
 }

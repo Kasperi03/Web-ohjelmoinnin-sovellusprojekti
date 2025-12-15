@@ -1,4 +1,3 @@
-// src/controllers/tmdbController.js
 import { searchPersonMoviesService,searchByGenreService,searchMoviesService,movieDetailsService,nowPlayingService,trendingService } from "../services/tmdb_service.js";
 
 export const searchMovies = async (req, res) => {

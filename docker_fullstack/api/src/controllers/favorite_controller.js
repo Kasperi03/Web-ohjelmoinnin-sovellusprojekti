@@ -47,7 +47,6 @@ export async function removeFavorite(req, res, next) {
   try {
     const accountId = req.user?.id || req.user?.account_id || req.user?.userId;
 
-    // Get the TMDB ID from the URL parameter (e.g. /api/favorites/550)
     const { tmdbId } = req.params;
 
     if (!accountId) {

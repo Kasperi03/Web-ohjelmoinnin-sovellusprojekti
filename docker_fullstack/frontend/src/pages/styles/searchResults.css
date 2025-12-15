@@ -1,9 +1,9 @@
 .pagination {
   display: flex;
-  justify-content: center;   /* center horizontally */
+  justify-content: center;
   align-items: center;
   list-style: none;
-  gap: 6px;                  /* space between buttons */
+  gap: 6px;
   margin-top: 40px;
   margin-bottom: 40px;
   padding: 0;
@@ -25,19 +25,16 @@
   transition: all 0.2s ease;
 }
 
-/* Hover effect */
 .pagination a:hover {
   background-color: #f2f2f2;
 }
 
-/* Active (selected) page */
 .pagination .selected a {
   background-color: #333;
   color: white;
   border-color: #333;
 }
 
-/* Disabled previous/next */
 .pagination .disabled a {
   color: #999;
   border-color: #eee;
@@ -45,22 +42,20 @@
   background-color: #fafafa;
 }
 
-/* Responsive grid layout */
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.5rem;
   justify-items: center;
   align-items: start;
-  max-width: 1200px; /* keeps about 5 cards per row on large screens */
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 
-/* Each movie card */
 .movie-card {
   width: 100%;
-  max-width: 200px;          /* sets a soft upper limit */
+  max-width: 200px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -74,7 +69,6 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Poster images */
 .movie-card img {
   width: 100%;
   height: 280px;
@@ -83,7 +77,6 @@
   border-bottom: 1px solid #eee;
 }
 
-/* Placeholder if no poster */
 .no-poster {
   width: 100%;
   height: 280px;
@@ -95,7 +88,6 @@
   font-size: 13px;
 }
 
-/* Title styling */
 .movie-card h4 {
   margin: 10px;
   font-size: 15px;

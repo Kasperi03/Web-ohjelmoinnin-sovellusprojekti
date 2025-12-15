@@ -16,6 +16,6 @@ body {
 }
 
 body::-webkit-scrollbar {
-  width: 0; /* remove scrollbar width */
+  width: 0;
   height: 0;
 }
