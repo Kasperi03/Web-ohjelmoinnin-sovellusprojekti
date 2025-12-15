@@ -1,4 +1,3 @@
--- Drop existing tables (in correct order to avoid FK conflicts)
 DROP TABLE IF EXISTS group_movies CASCADE;
 DROP TABLE IF EXISTS favorites CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
@@ -95,5 +94,5 @@ CREATE TABLE reviews (
 
     created_at TIMESTAMP DEFAULT NOW(),
 
-    UNIQUE (account_id, movie_id)   -- 1 review per user per movie
+    UNIQUE (account_id, movie_id)
 );

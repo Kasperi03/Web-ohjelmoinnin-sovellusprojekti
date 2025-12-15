@@ -1,4 +1,3 @@
-// useGroups.js
 import { useState } from "react";
 
 export function useGroups() {

@@ -1,4 +1,4 @@
-// group_member_controller.js
+
 import {
   requestJoin,
   acceptMember,
@@ -15,7 +15,6 @@ import {
 
 import { getOne as getGroupById } from "../models/group_model.js";
 
-// User requests to join a group
 export async function joinGroup(req, res, next) {
   try {
     const groupId = req.params.groupId;
@@ -35,7 +34,6 @@ export async function joinGroup(req, res, next) {
   }
 }
 
-// Owner approves join request
 export async function approveMemberRequest(req, res, next) {
   try {
     const { id } = req.params;
@@ -55,8 +53,6 @@ export async function approveMemberRequest(req, res, next) {
     next(err);
   }
 }
-
-// Owner rejects join request
 export async function rejectMemberRequest(req, res, next) {
   try {
     const { id } = req.params;
@@ -77,7 +73,6 @@ export async function rejectMemberRequest(req, res, next) {
   }
 }
 
-// Owner removes an accepted member
 export async function removeGroupMember(req, res, next) {
   try {
     const { id } = req.params;
@@ -102,7 +97,6 @@ export async function removeGroupMember(req, res, next) {
   }
 }
 
-// Get accepted members
 export async function getGroupMembers(req, res, next) {
   try {
     const groupId = req.params.groupId;
@@ -124,7 +118,6 @@ export async function getGroupMembers(req, res, next) {
 }
 
 
-// Get pending requests (owner only)
 export async function getPendingRequests(req, res, next) {
   try {
     const groupId = req.params.groupId;
@@ -143,7 +136,6 @@ export async function getPendingRequests(req, res, next) {
     next(err);
   }
 }
-// Leave a group (member removing THEMSELF)
 export async function leaveGroup(req, res, next) {
     console.log("🔥 HIT leaveGroup ROUTE");
   console.log("PARAMS:", req.params);
@@ -154,21 +146,18 @@ export async function leaveGroup(req, res, next) {
       console.log("GROUP ID:", groupId);
     console.log("USER ID:", userId);
 
-    // Can't leave if you're not a member
     const membership = await getMemberRow(groupId, userId);
     console.log("MEMBERSHIP ROW:", membership);
     if (!membership) {
       return res.status(404).json({ error: "You are not a member of this group" });
     }
 
-    // Owner cannot leave their own group
     const group = await getGroupById(groupId);
     console.log("GROUP ROW:", group);
     if (group.owner_id === userId) {
       return res.status(400).json({ error: "Owner cannot leave their own group" });
     }
 
-    // Remove membership
     await removeMember(membership.id);
 
     res.json({ message: "You left the group" });
@@ -198,7 +187,6 @@ export async function checkIfMember(req, res) {
     const groupId = req.params.groupId;
     const userId = req.user.account_id;
 
-    // This gives you: id, group_id, account_id, status
     const membership = await getMemberRow(groupId, userId);
 
     if (!membership) {
@@ -209,7 +197,7 @@ export async function checkIfMember(req, res) {
     }
 
     return res.json({
-      status: membership.status,                 // "accepted", "pending", "rejected"
+      status: membership.status,
       isMember: membership.status === "accepted"
     });
 

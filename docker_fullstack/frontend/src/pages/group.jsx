@@ -62,31 +62,27 @@ export default function GroupPage() {
 useEffect(() => {
   async function loadMovies() {
     try {
-      // Fetch movies (internal id + api_id)
       const ids = await getGroupMovies(groupId);
 
       console.log("Raw group movies:", ids);
 
-      // If backend returned an error object (not an array)
       if (!Array.isArray(ids)) {
         console.warn("User cannot view movies:", ids);
         return;
       }
 
-      // Fetch TMDB details for each movie
       const movies = await Promise.all(
         ids.map(async (entry) => {
           const tmdb = await fetchMovieDetails(entry.api_id);
 
           return {
-            ...tmdb,          // TMDB data
-            db_id: entry.id,  // INTERNAL DB movie_id
+            ...tmdb,
+            db_id: entry.id,
             api_id: entry.api_id
           };
         })
       );
 
-      // ✅ Log the final merged movie objects HERE
       console.log("Final movies (merged):", movies);
 
       setMovies(movies);
@@ -102,15 +98,12 @@ useEffect(() => {
 
 
 
-  // decode JWT
   const user = getCurrentUser();
   const userId = user?.account_id;
 
-  // dynamic role checks
   const isOwner = members.some((m) => m.account_id === userId && m.is_owner);
   const isMember = members.some((m) => m.account_id === userId);
 
-  // Load members + pending on mount
   useEffect(() => {
     loadMembers();
   }, [groupId]);
@@ -119,12 +112,11 @@ useEffect(() => {
     if (isOwner) {
       loadPending();
     } else {
-      setPending([]); // reset for non-owner
+      setPending([]);
     }
   }, [isOwner, groupId]);
 
 
-  // Fetch accepted members
   const loadMembers = async () => {
     try {
       const list = await getGroupMembers(groupId);
@@ -137,19 +129,17 @@ useEffect(() => {
   };
 
 
-  // Fetch pending requests
   const loadPending = async () => {
     try {
       const list = await getPendingMembers(groupId);
       setPending(list);
     } catch (err) {
       console.error("Pending fetch error:", err);
-      setPending([]); // silent fail, no alerts
+      setPending([]);
     }
   };
 
 
-  // Delete group (owner only)
   const handleDeleteGroup = async () => {
     if (!window.confirm("Delete this group?")) return;
 
@@ -161,7 +151,6 @@ useEffect(() => {
     }
   };
 
-  // Rename group (owner only)
   const handleRenameGroup = async () => {
     if (!newName.trim()) return;
 
@@ -174,7 +163,6 @@ useEffect(() => {
     }
   };
 
-  // A member leaves the group
   const handleLeave = async () => {
     if (!window.confirm("Leave this group?")) return;
 
@@ -186,7 +174,6 @@ useEffect(() => {
     }
   };
 
-  // Approve/reject pending
   const handleApprove = async (memberId) => {
     await approveMember(groupId, memberId);
     loadPending();
@@ -257,7 +244,7 @@ useEffect(() => {
     });
   };
 
-// Inject delete button overlay into each movie (owner only)
+
 movies.forEach((movie) => {
   movie.renderExtra = isOwner ? (
     <button
@@ -265,7 +252,7 @@ movies.forEach((movie) => {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleRemoveMovie(movie.db_id); // ← FIXED
+        handleRemoveMovie(movie.db_id);
       }}
     >
       ✖
@@ -278,7 +265,6 @@ const handleRemoveMovie = async (movieId) => {
   try {
     await removeMovieFromGroup(groupId, movieId);
 
-    // filter using db_id, not id
     setMovies(prev => prev.filter(m => m.db_id !== movieId));
 
   } catch (err) {
@@ -291,12 +277,10 @@ const handleRemoveMovie = async (movieId) => {
   return (
     <div className="group-container">
 
-      {/* OWNER / MEMBERS SECTION (TOP) */}
+      
       <div className="section-box">
-        {/* Owner controls, pending, members */}
         {isOwner && (
           <>
-            {/* Owner Controls */}
             <div className="group-owner-controls">
               {!isRenaming ? (
                 <>
@@ -401,8 +385,6 @@ const handleRemoveMovie = async (movieId) => {
           return null;
         })}
 
-        {/* CAROUSEL (BOTTOM) */}
-        {/* CAROUSEL (BOTTOM) */}
 <div className="group-carousel-wrapper">
   {isOwner && (
     <div className="delete-hint">Click ✖ to remove a movie</div>

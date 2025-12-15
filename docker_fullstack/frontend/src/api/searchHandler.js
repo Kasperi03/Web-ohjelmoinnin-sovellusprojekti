@@ -1,5 +1,3 @@
-// FRONTEND VERSION — calls backend, not TMDB
-
 export async function searchMovies(query, page = 1) {
   const res = await fetch(
     `/api/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`

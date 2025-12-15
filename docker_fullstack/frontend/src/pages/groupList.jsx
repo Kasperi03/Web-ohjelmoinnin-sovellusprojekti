@@ -12,15 +12,12 @@ export default function GroupList() {
   const isLoggedIn = !!user;
 
 
-  // Load groups from backend
 useEffect(() => {
   async function fetchGroups() {
     try {
-      // 1. Fetch basic group info
       const res = await fetch("http://localhost:3001/groups");
       const groupsData = await res.json();
 
-      // 2. Fetch member counts for each group
       const groupsWithCounts = await Promise.all(
         groupsData.map(async (group) => {
           try {
@@ -40,13 +37,12 @@ useEffect(() => {
             );
             return {
               ...group,
-              memberCount: 0, // fallback so UI doesn't break
+              memberCount: 0,
             };
           }
         })
       );
 
-      // 3. Save the final result into state
       setGroups(groupsWithCounts);
 
     } catch (err) {

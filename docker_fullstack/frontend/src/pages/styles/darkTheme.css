@@ -1,10 +1,10 @@
 :root {
-  --background: #121314dc; /* slightly darker for true contrast */
-  --text-color: #f5f4f1; /* brighter, readable text */
+  --background: #121314dc;
+  --text-color: #f5f4f1;
   --accent-color: #3391ff;
   --border-color: #4f5458;
   --placeholder-color: #a7a49c;
-  --card-bg: #1e1f21; /* lighter than background for contrast */
+  --card-bg: #1e1f21; 
 }
 
 html,
@@ -56,10 +56,9 @@ input::placeholder {
   color: var(--placeholder-color);
 }
 
-/* 🎬 Movie cards */
 .movie-card {
   background-color: var(--card-bg);
-  color: #ffffff; /* bright white for contrast */
+  color: #ffffff; 
   border-radius: 10px;
   padding: 0.8rem;
   text-align: center;
@@ -71,7 +70,7 @@ input::placeholder {
   color: #ffffff;
   font-weight: 600;
   margin-top: 0.5rem;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* outline-like shadow */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .movie-card:hover {
@@ -79,7 +78,6 @@ input::placeholder {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
-/* 🎞 Movie grid layout */
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -90,7 +88,6 @@ input::placeholder {
   margin: 2rem auto;
 }
 
-/* ⏩ Pagination */
 .pagination {
   display: flex;
   justify-content: center;

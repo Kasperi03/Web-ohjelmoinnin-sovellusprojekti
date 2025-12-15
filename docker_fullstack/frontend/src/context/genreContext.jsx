@@ -39,7 +39,6 @@ export function GenreProvider({ children }) {
   );
 }
 
-// helper hook so you can easily access genres anywhere
 export function useGenres() {
   return useContext(GenreContext);
 }

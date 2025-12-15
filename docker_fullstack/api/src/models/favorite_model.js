@@ -1,7 +1,6 @@
 import pool from "../database.js";
 
 export async function addFavorite(accountId, tmdbId) {
-  // Ensure movie exists in movies table
   const movieResult = await pool.query(
     `INSERT INTO movies (api_id)
      VALUES ($1)
@@ -12,7 +11,6 @@ export async function addFavorite(accountId, tmdbId) {
 
   const movieId = movieResult.rows[0].movie_id;
 
-  // Add to favorites
   const favResult = await pool.query(
     `INSERT INTO favorites (account_id, movie_id)
      VALUES ($1, $2)
@@ -21,7 +19,7 @@ export async function addFavorite(accountId, tmdbId) {
     [accountId, movieId]
   );
 
-  return favResult.rows[0] || null; // null if already favorited
+  return favResult.rows[0] || null; 
 }
 
 export async function getFavoritesByUser(accountId) {

@@ -1,9 +1,3 @@
-// frontend/src/api/homeApi.js
-// (or whatever this file was called originally)
-
-// -----------------------------------------
-// Fetch "Now Playing" movies (backend proxy)
-// -----------------------------------------
 export async function getNowInTheaters() {
   try {
     const res = await fetch(`/api/tmdb/now`);
@@ -15,9 +9,6 @@ export async function getNowInTheaters() {
   }
 }
 
-// -----------------------------------------
-// Fetch Trending movies (backend proxy)
-// -----------------------------------------
 export async function getTrending() {
   try {
     const res = await fetch(`/api/tmdb/trending`);

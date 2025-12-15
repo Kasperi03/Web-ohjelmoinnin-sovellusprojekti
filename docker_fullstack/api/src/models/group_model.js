@@ -15,7 +15,6 @@ export const getOne = async (id) => {
 };
 
 export async function addOne(ownerId, name) {
-  // create the group
   const result = await pool.query(
     `INSERT INTO groups (owner_id, name)
      VALUES ($1, $2)
@@ -26,7 +25,6 @@ export async function addOne(ownerId, name) {
   const group = result.rows[0];
   const groupId = group.group_id;
 
-  // insert the owner as an accepted member
   await pool.query(
     `INSERT INTO group_members (group_id, account_id, status)
      VALUES ($1, $2, 'accepted')`,

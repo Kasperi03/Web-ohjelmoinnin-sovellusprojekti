@@ -26,7 +26,7 @@ export async function getGroup(req, res, next) {
 export async function addGroup(req, res, next) {
   try {
     const { name } = req.body;
-    const ownerId = req.user.account_id; // <-- REQUIRED
+    const ownerId = req.user.account_id; 
 
     if (!name) {
       return res.status(400).json({ error: "Group name required" });

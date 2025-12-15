@@ -10,12 +10,10 @@ import { getOne as getGroupById } from "../models/group_model.js";
 
 export const addMovie = async (req, res) => {
   try {
-    const { groupId, apiId } = req.params;  // <-- Now coming from params NOT body
+    const { groupId, apiId } = req.params; 
 
-    // Convert API ID → internal DB movie_id
     const movieId = await ensureMovieExists(apiId);
 
-    // Add to group_movies using internal movie_id
     const inserted = await addMovieToGroup(groupId, movieId);
 
     res.status(201).json(inserted);
@@ -36,13 +34,10 @@ export const removeMovie = async (req, res) => {
     const { groupId, movieId } = req.params;
     const accountId = req.user.account_id;
 
-    // Check if group exists
     const group = await getGroupById(groupId);
     if (!group) {
       return res.status(404).json({ error: "Group not found" });
     }
-
-    // Only owner can remove movies
     if (group.owner_id !== accountId) {
       return res.status(403).json({ error: "Only the group owner can remove movies" });
     }
