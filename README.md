@@ -26,8 +26,12 @@ Movie database web application inspired by TMDB, built with React and JavaScript
 
 
 **Frontend:** React, JavaScript, css.
+
 **Backend:** JavaScript, PostgreSQL.
-**API:** TMDB API,
+
+**API:** TMDB API.
+
+
 
 
 
