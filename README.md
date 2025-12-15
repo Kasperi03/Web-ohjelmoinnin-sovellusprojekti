@@ -29,12 +29,6 @@ API: TMDB API.
 
 
 
-**Frontend:** React, JavaScript, css.
-
-**Backend:** JavaScript, PostgreSQL.
-
-**API:** TMDB API.
-
 
 
 
