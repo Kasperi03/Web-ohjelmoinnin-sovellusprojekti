@@ -19,7 +19,7 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
   };
 
   const goToDetails = (id) => {
-    navigate(`/groupList`); // <- replace with movie details route
+    navigate(`/groupList`);
     navigate(`/groupList`);
   };
 
@@ -48,7 +48,7 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
               <div
                 key={`${movie.id}-${index}`}
                 className="carousel-slide"
-                onClick={() => navigate(`/movie/${movie.id}`)} // <-- clickable
+                onClick={() => navigate(`/movie/${movie.id}`)}
                 style={{ cursor: "pointer" }}
                 
               >
@@ -62,7 +62,7 @@ export default function Carousel({ title = "", movies = [], visibleSlides = 4 })
                   <div className="title-overlay"> {movie.title} </div>
                   <div className="rating"> rating: {movie.vote_average?.toFixed(1)}/10</div>
                 </div>{" "}
-                {/* Overlay that shows movie title and rating on hover */}
+                
               </div>
             ))}
           </div>

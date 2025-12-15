@@ -27,7 +27,6 @@ export async function addFavorite(tmdbId) {
 export async function getFavorites() {
   const token = localStorage.getItem("token");
 
-  // Return object matching backend structure to prevent crashes if not logged in
   if (!token) return { favorites: [] };
 
   const response = await fetch(API_URL, {
@@ -55,14 +54,13 @@ export async function deleteFavorite(tmdbId) {
     });
 
     if (!response.ok) {
-      // Get the full text response for debugging
       const text = await response.text();
       console.error("Delete favorite response:", text);
       let errorData = {};
       try {
         errorData = JSON.parse(text);
       } catch (e) {
-        // response was not JSON
+        
       }
       throw new Error(errorData.error || "Failed to remove favorite");
     }

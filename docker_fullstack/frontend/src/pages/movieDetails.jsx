@@ -153,14 +153,12 @@ const addToGroup = async (groupId) => {
   return (
     <div className="movie-details">
       <div className="movie-top-row">
-        {/* Poster */}
         <img
           className="details-poster"
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
         />
 
-        {/* Trailer */}
         {trailer && (
           <div className="details-trailer-box">
             <h2>Trailer</h2>
@@ -176,7 +174,6 @@ const addToGroup = async (groupId) => {
       <div className="details-bottom">
         <h1>{movie.title}</h1>
 
-        {/* Movie Rating */}
         {movie.vote_average && (
           <div className="movie-rating">
             ⭐ {movie.vote_average.toFixed(1)} / 10
@@ -186,7 +183,6 @@ const addToGroup = async (groupId) => {
         <p className="details-overview">{movie.overview}</p>
 
 
-        {/* Action buttons (only when logged in) */}
         {user && (
           <div className="movie-actions">
             <button className="fav-btn" onClick={toggleFavorite}>
@@ -218,7 +214,6 @@ const addToGroup = async (groupId) => {
           </div>
         )}
 
-        {/* Rating section */}
         {user && (
           <div className="rating-section">
             <h3>{isEditing ? "Edit Your Rating" : "Your Rating"}</h3>
@@ -236,7 +231,6 @@ const addToGroup = async (groupId) => {
           </div>
         )}
 
-        {/* Review section */}
         {user && (
           <div className="review-section">
             <h3>{isEditing ? "Edit Your Review" : "Your Review"}</h3>

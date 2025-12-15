@@ -4,8 +4,8 @@ import { getNowInTheaters, getTrending } from "../api/tmbs.js";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [NowInTheaters, setNowInTheaters] = useState([]); // update state variable name to NowInTheaters when getting value from API
-  const [trending, setTrending] = useState([]); // update state variable name to trending when getting value from API
+  const [NowInTheaters, setNowInTheaters] = useState([]);
+  const [trending, setTrending] = useState([]);
 
   useEffect(() => {
     async function fetchMovies() {

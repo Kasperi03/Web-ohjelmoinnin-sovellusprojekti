@@ -12,7 +12,6 @@ GroupRouter.get("/me", auth, getGroupsForUser);
 GroupRouter.get("/", getGroups);
 
 
-//protected routes
 GroupRouter.get("/:id",auth,checkGroupMember, getGroup);
 GroupRouter.post("/",auth, addGroup);
 GroupRouter.put("/:id",auth,checkGroupOwner, updateGroup);

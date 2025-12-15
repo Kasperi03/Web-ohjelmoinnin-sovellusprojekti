@@ -1,7 +1,5 @@
-// group_member_model.js
 import pool from "../database.js";
 
-// User requests to join a group
 export async function requestJoin(groupId, accountId) {
   const result = await pool.query(
     `INSERT INTO group_members (group_id, account_id, status)
@@ -14,7 +12,6 @@ export async function requestJoin(groupId, accountId) {
   return result.rows[0];
 }
 
-// Owner accepts request
 export async function acceptMember(id) {
   const result = await pool.query(
     `UPDATE group_members
@@ -26,7 +23,6 @@ export async function acceptMember(id) {
   return result.rows[0];
 }
 
-// Owner rejects request
 export async function rejectMember(id) {
   const result = await pool.query(
     `UPDATE group_members
@@ -38,7 +34,6 @@ export async function rejectMember(id) {
   return result.rows[0];
 }
 
-// Remove member (owner force-removal)
 export async function removeMember(id) {
   const result = await pool.query(
     `DELETE FROM group_members
@@ -49,7 +44,6 @@ export async function removeMember(id) {
   return result.rows[0];
 }
 
-// List accepted members
 export async function getAcceptedMembers(groupId) {
   const result = await pool.query(
     `SELECT 
@@ -71,7 +65,6 @@ export async function getAcceptedMembers(groupId) {
 }
 
 
-// List pending join requests
 export async function getPendingMembers(groupId) {
   const result = await pool.query(
     `SELECT gm.*, a.username
@@ -83,7 +76,6 @@ export async function getPendingMembers(groupId) {
   return result.rows;
 }
 
-// Look up one membership row
 export async function getMemberById(id) {
   const result = await pool.query(
     `SELECT * FROM group_members WHERE id = $1`,

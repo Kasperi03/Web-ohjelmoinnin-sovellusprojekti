@@ -13,7 +13,6 @@ export default function GroupListing({ groupId, name }) {
   const [status, setStatus] = useState(null);
 
 
-  // Fetch member count for this group
   useEffect(() => {
     fetch(`http://localhost:3001/groups/${groupId}/member-count`)
       .then((res) => res.json())
@@ -21,7 +20,6 @@ export default function GroupListing({ groupId, name }) {
       .catch(() => setMemberCount(0));
   }, [groupId]);
 
-  // Check if user is already a member
  useEffect(() => {
    if (!isLoggedIn) return;
 
@@ -44,10 +42,10 @@ export default function GroupListing({ groupId, name }) {
       <div className="group-block">
         <h2 className="group-name">{name}</h2>
 
-        {/* Always show */}
+       
         <span className="member-count">members: {memberCount}</span>
 
-        {/* Only logged-in AND not a member */}
+        
         {isLoggedIn && status === null && (
           <button
   className="join-button"
@@ -57,7 +55,7 @@ export default function GroupListing({ groupId, name }) {
     try {
       const res = await joinGroup(groupId);
 
-      // Update UI immediately
+      
       setStatus("pending");
 
     } catch (err) {

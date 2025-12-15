@@ -44,11 +44,9 @@ export function createToken(user) {
 }
 
 export async function deleteAccount(accountId) {
-  // Start a database transaction
   await pool.query("BEGIN");
 
   try {
-    // STEP 1 — Find groups owned by this account
     const ownerGroups = await pool.query(
       `SELECT group_id
        FROM groups
@@ -59,7 +57,6 @@ export async function deleteAccount(accountId) {
     for (const row of ownerGroups.rows) {
       const groupId = row.group_id;
 
-      // STEP 2 — Get all accepted members of this group
       const members = await pool.query(
         `SELECT account_id
          FROM group_members
@@ -69,7 +66,6 @@ export async function deleteAccount(accountId) {
         [groupId]
       );
 
-      // If this user is the only member → DELETE the whole group
       if (members.rows.length <= 1) {
         await pool.query(
           `DELETE FROM groups WHERE group_id = $1`,
@@ -78,7 +74,6 @@ export async function deleteAccount(accountId) {
         continue;
       }
 
-      // STEP 3 — Transfer ownership to the next accepted member
       const newOwner = members.rows.find(
         m => m.account_id !== accountId
       );
@@ -91,7 +86,6 @@ export async function deleteAccount(accountId) {
           [newOwner.account_id, groupId]
         );
       } else {
-        // Safety: should never occur, but delete as fallback
         await pool.query(
           `DELETE FROM groups WHERE group_id = $1`,
           [groupId]
@@ -99,7 +93,6 @@ export async function deleteAccount(accountId) {
       }
     }
 
-    // STEP 4 — Delete the account (cascades: reviews, favorites, members, etc.)
     const result = await pool.query(
       `DELETE FROM account
        WHERE account_id = $1
@@ -109,7 +102,7 @@ export async function deleteAccount(accountId) {
 
     await pool.query("COMMIT");
 
-    return result.rowCount > 0; // Same return signature as your original
+    return result.rowCount > 0;
   } catch (err) {
     await pool.query("ROLLBACK");
     throw err;

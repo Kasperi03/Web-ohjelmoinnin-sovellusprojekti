@@ -34,7 +34,6 @@ export default function Profile() {
   const [oldPasswordInput, setOldPasswordInput] = useState("");
   const [newPasswordInput, setNewPasswordInput] = useState("");
 
-  // yhteinen j/E popup
   const [message, setMessage] = useState(null);
 
   const navigate = useNavigate();
@@ -220,7 +219,6 @@ export default function Profile() {
         <div className="profile-avatar" />
         <h1 className="profile-title">Profile</h1>
 
-        {/* username */}
         <div className="profile-field">
           <label className="profile-label">Username</label>
           <div className="profile-field-row">
@@ -240,7 +238,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* email */}
         <div className="profile-field">
           <label className="profile-label">Email</label>
           <div className="profile-field-row">
@@ -260,7 +257,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* password */}
         <div className="profile-field">
           <label className="profile-label">Password</label>
           <div className="profile-field-row">
@@ -280,7 +276,6 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* delete */}
         <button
           className="profile-delete-btn"
           type="button"
@@ -290,7 +285,6 @@ export default function Profile() {
         </button>
       </div>
 
-      {/* delete varoitus popup */}
       {showConfirm && (
         <div className="profile-confirm-overlay">
           <div className="profile-confirm-dialog">
@@ -321,7 +315,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* username popup */}
       {showUsernamePopup && (
         <div className="profile-popup-container">
           <div className="profile-popup-card">
@@ -359,7 +352,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* email popup */}
       {showEmailPopup && (
         <div className="profile-popup-container">
           <div className="profile-popup-card">
@@ -398,7 +390,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* salasana popup */}
       {showPasswordPopup && (
         <div className="profile-popup-container">
           <div className="profile-popup-card">
@@ -437,7 +428,6 @@ export default function Profile() {
         </div>
       )}
 
-      {/* yleinen succes/error popup */}
       {message && (
         <div className="profile-popup-container">
           <div className="profile-popup-card">
