@@ -25,20 +25,47 @@ Backend: JavaScript, PostgreSQL, Express.js
 API: TMDB API.
 
 
-Requirements
+
+
+
+
+**Frontend:** React, JavaScript, css.
+
+**Backend:** JavaScript, PostgreSQL.
+
+**API:** TMDB API.
+
+
+
+
+
+
+**Requirements**
+
 
 -Docker
 
-Installation. 
 
-Clone the repository.
+
+
+
+**Installation:**
+
+
+**Clone the repository.**
 
 git clone https://github.com/Kasperi03/Web-ohjelmoinnin-sovellusprojekti
 
 cd docker_fullstack
 
-Run with docker
+
+
+**Run with docker:**
+
 docker-compose up --build
 
-Open with 
+
+
+**Open with:**
+
 http://localhost:3000
