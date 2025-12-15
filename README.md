@@ -25,11 +25,15 @@ API: TMDB API,
 
 
 Requirements
+
 -Docker
 
 Installation. 
+
 Clone the repository.
+
 git clone https://github.com/Kasperi03/Web-ohjelmoinnin-sovellusprojekti
+
 cd docker_fullstack
 
 Run with docker
